@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<div class="container mt-5">
+    <div th:if="${success != null or error != null}" class="mb-4">
+        <div th:if="${success != null}"
+             class="alert alert-magica bg-white border-0 shadow-sm text-success">
+            <i class="bi bi-check-circle-fill me-2" style="color: #00d4aa;"></i>
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error != null}"
+             class="alert alert-magica bg-white border-0 shadow-sm text-danger">
+            <i class="bi bi-exclamation-octagon-fill me-2" style="color: #6907ab;"></i>
+            <span th:text="${error}"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card card-magica-form shadow-lg">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 fw-bold text-center"
+                        th:text="${categoriaEnEdicion.id != null and categoriaEnEdicion.id != 0} ? '✨ Editar Esencia' : '💎 Nueva Categoría'">
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form id="formCategoria" th:action="@{/admin/categorias/guardar}" th:object="${categoriaEnEdicion}" method="post" enctype="multipart/form-data">
+
+                        <input type="hidden" th:if="${categoriaEnEdicion.id != null and categoriaEnEdicion.id != 0}" th:field="*{id}">
+
+                        <input type="hidden" name="imagenActual" th:value="*{imagenBanner}">
+
+                        <div class="mb-3">
+                            <label class="form-label label-magico text-uppercase">Nombre de la Categoría</label>
+                            <input type="text" th:field="*{nombre}" class="form-control"
+                                   placeholder="Ej: Pociones Astrales" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label label-magico text-uppercase">Banner Místico</label>
+
+                            <ul class="nav nav-pills nav-fill mb-2 p-1" id="imgTabCat" role="tablist"
+                                style="border-radius: 15px; background-color: #f8f0ff; border: 1px solid #d9aaff;">
+                                <li class="nav-item">
+                                    <button class="nav-link active btn-sm fw-bold" id="galeria-cat-tab"
+                                            data-bs-toggle="tab" data-bs-target="#galeriaCat" type="button">📜 Galería</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link btn-sm fw-bold" id="subir-cat-tab"
+                                            data-bs-toggle="tab" data-bs-target="#subirCat" type="button">☁️ Subir</button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content border p-3 bg-white" style="border-radius: 15px;">
+                                <div class="tab-pane fade show active" id="galeriaCat">
+                                    <select name="imagenExistente" class="form-select border-0 bg-light">
+                                        <option value="">-- Elige un Banner --</option>
+                                        <option th:each="img : ${galeriaImagenes}" th:value="${img}" th:text="${img}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="tab-pane fade" id="subirCat">
+                                    <input type="file" name="archivoImagen" class="form-control border-0 bg-light" accept="image/*">
+                                </div>
+                            </div>
+
+                            <div class="preview-container-magico shadow-sm mt-3">
+                                <small class="d-block mb-2 fw-bold text-center" style="color: #00d4aa;">VISTA PREVIA:</small>
+                                <img id="preview"
+                                     th:src="${categoriaEnEdicion.imagenBanner != null and categoriaEnEdicion.imagenBanner != 'banner-simple.jpg' and categoriaEnEdicion.imagenBanner != ''} ?
+                                     ((${galeriaImagenes.contains(categoriaEnEdicion.imagenBanner)} or ${#strings.contains(categoriaEnEdicion.imagenBanner, '/')}) ? @{'/assets/img/' + ${categoriaEnEdicion.imagenBanner}} : @{'/uploads/categorias/' + ${categoriaEnEdicion.imagenBanner}}) :
+                                     @{/assets/img/banner-simple.jpg}"
+                                     class="preview-img-magica d-block mx-auto"
+                                     style="width: 100%; height: 100%; border-radius: 15px; object-fit: cover; border: 2px solid #afeeee;">
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-turquesa-magico py-2 fw-bold">
+                                <i class="bi bi-stars me-1"></i>
+                                <span th:text="${categoriaEnEdicion.id != null and categoriaEnEdicion.id != 0} ? 'Actualizar Esencia' : 'Manifestar Categoría'"></span>
+                            </button>
+                            <a th:if="${categoriaEnEdicion.id != null and categoriaEnEdicion.id != 0}"
+                               th:href="@{/admin/categorias/gestion}"
+                               class="btn btn-link text-muted text-decoration-none text-center small">Cancelar Edición</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 30px; overflow: hidden;">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-center">
+                        <thead class="table-light text-uppercase small fw-bold">
+                        <tr style="background: #f8f0ff;">
+                            <th class="py-3" style="color: #6907ab;">ID</th>
+                            <th class="py-3" style="color: #6907ab;">Banner</th>
+                            <th class="py-3" style="color: #6907ab;">Nombre</th>
+                            <th class="py-3" style="color: #6907ab;">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="c : ${categorias}">
+                            <td class="fw-bold" th:text="'#' + ${c.id}"></td>
+                            <td>
+                                <img th:src="${c.imagenBanner != null and c.imagenBanner != 'banner-simple.jpg' and c.imagenBanner != ''} ?
+                                    ((${galeriaImagenes.contains(c.imagenBanner)} or ${#strings.contains(c.imagenBanner, '/')}) ? @{'/assets/img/' + ${c.imagenBanner}} : @{'/uploads/categorias/' + ${c.imagenBanner}}) :
+                                    @{/assets/img/banner-simple.jpg}"
+                                     alt="banner" style="width: 80px; height: 45px; object-fit: cover;"
+                                     class="rounded-3 border shadow-sm">
+                            </td>
+                            <td class="fw-bold label-magico" style="font-size: 1.1rem;" th:text="${c.nombre}"></td>
+                            <td>
+                                <div class="btn-group gap-2">
+                                    <a th:href="@{/admin/categorias/gestion(action='edit', id=${c.id})}"
+                                       class="btn btn-editar-magico btn-sm shadow-sm">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+
+                                    <button type="button" class="btn btn-eliminar-magico btn-sm shadow-sm"
+                                            th:onclick="prepararBorradoCat([[${c.id}]], [[${c.nombre}]])"
+                                            data-bs-toggle="modal" data-bs-target="#deleteCatModal">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteCatModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-magico-danger">
+            <div class="modal-header header-eliminar-modal">
+                <h5 class="modal-title fw-bold text-white">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> ¿Desvanecer Categoría?
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="mb-1 text-muted small text-uppercase fw-bold">Vas a eliminar la esencia de:</p>
+                <h5 id="nombreCatBorrar" class="fw-bold mb-3" style="color: #6907ab;"></h5>
+                <div class="alert-magica-warning py-3 px-3 mb-0 small text-start">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Asegúrate de que no existan subcategorías o productos vinculados.
+                </div>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center pb-4">
+                <button type="button" class="btn btn-revisar-modal" data-bs-dismiss="modal">Conservar</button>
+                <form id="formEliminarCat" method="post" action="#">
+                    <button type="submit" class="btn btn-desvanecer-confirmar">
+                        Sí, Eliminar <i class="bi bi-wind ms-1"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+
+</body>
+</html>

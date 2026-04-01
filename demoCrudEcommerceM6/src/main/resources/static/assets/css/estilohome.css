@@ -1,0 +1,1087 @@
+/* =========================================
+   1. CONFIGURACIÓN GLOBAL Y FONDO
+   ========================================= */
+body {
+    background: radial-gradient(circle, #c37bff, #f480ff, #ffffff, #7bc1ff, rgb(127, 255, 227));
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.btn-subir-fijo {
+    position: fixed !important;
+    bottom: 25px !important;
+    right: 25px !important;
+    z-index: 99999 !important;
+
+    /* En lugar de display: none, usamos esto para que la transición funcione */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+/* Esta clase la activaremos con JavaScript */
+.btn-subir-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateY(0) scale(1);
+}
+
+/* Estado inicial para que "salte" al aparecer */
+.btn-subir-fijo:not(.btn-subir-visible) {
+    transform: translateY(20px) scale(0.5);
+}
+
+/* 3. El Brillo de Sailor Moon (Filtro) */
+.btn-subir-fijo img {
+    filter: drop-shadow(0 0 8px rgba(162, 82, 238, 0.5));
+    display: block;
+}
+
+/* 4. Efecto de Interacción (Hover) */
+.btn-subir-fijo:hover {
+    transform: scale(1.15) rotate(15deg); /* Crece y gira */
+    filter: drop-shadow(0 0 15px rgba(244, 128, 255, 0.9)); /* Brillo intenso */
+}
+
+#tipBelleza h4, #tipSombra h4, #tipSkingCare h4 {
+    color: #6907ab; text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 2px solid #f480ff; display: inline-block; padding-bottom: 5px;
+}
+
+.imagenTips { border-radius: 20px; border: 3px solid #6907ab; margin: 20px 0; }
+
+#comienzoHome, #tipBelleza, #tipSombra, #tipSkingCare,
+#infoEmpresa, #selloEmpresa, #anteFinal, #formularioContacto {
+    border-radius: 30px; padding: 30px; margin: 40px auto;
+    border: none; box-shadow: 0px 10px 25px rgba(105, 7, 171, 0.2);
+}
+
+#comienzoHome { background-color: rgb(253, 197, 242); color: black; }
+#tipBelleza   { background-color: rgb(170, 200, 255); }
+#tipSombra    { background-color: rgb(217, 170, 255); }
+#tipSkingCare { background-color: rgb(164, 225, 208); }
+#infoEmpresa  { background-color: rgb(255, 242, 196); }
+#selloEmpresa { background-color: bisque; }
+#anteFinal    { background-color: rgb(253, 200, 235); }
+#formularioContacto { background-color: rgb(212, 173, 251); padding-top: 50px; }
+
+/* =========================================
+   2. NAVBAR Y NAVEGACIÓN (HEADER)
+   ========================================= */
+   .navbar-mistica { background-color: #000000 !important; border-bottom: 2px solid #6907ab; }
+
+   /* AJUSTE DEL NUMERITO: Ahora más cerca del carrito */
+   #numerito {
+       position: absolute;
+       top: -5px; /* Sube un poquito */
+       right: -8px; /* Se pega al borde derecho del icono */
+       background: rgb(249, 21, 162);
+       width: 18px;
+       height: 18px;
+       border-radius: 50%;
+       font-weight: 700;
+       color: white;
+       font-size: 11px;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       border: 1px solid white; /* Le da un borde para que resalte en el negro */
+   }
+
+   /* Para que el numerito funcione bien, su contenedor padre (el enlace del carrito)
+      debe tener position: relative */
+   .nav-link.position-relative {
+       display: inline-block;
+   }
+
+   .btn-perfil-magic.dropdown-toggle {
+       color: #00d4aa !important; font-weight: 700 !important;
+       border: 2px solid #afeeee !important; border-radius: 50px !important;
+       padding: 5px 15px !important; display: flex; align-items: center;
+   }
+
+
+.navbar-mistica {
+    background-color: #000000 !important;
+    border-bottom: 2px solid #6907ab;
+}
+
+.admin-bar-dark {
+    background: #121212 !important;
+    border-bottom: 2px solid #f480ff !important;
+}
+
+.admin-nav-links-dark {
+    display: flex;
+    gap: 20px;
+}
+
+.admin-nav-links-dark a {
+    color: #ffffff !important;
+    text-decoration: none !important;
+    font-size: 0.85rem;
+    font-weight: bold;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.admin-nav-links-dark a:hover {
+    color: #00d4aa !important;
+    transform: translateY(-1px);
+}
+
+.admin-badge-text {
+    color: #f480ff !important;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.modal-eliminar-magico .modal-header {
+    background-color: #1a1a1a !important;
+    border-bottom: 3px solid #6907ab !important;
+}
+
+/* Botón de Perfil con borde Turquesa Pastel */
+.btn-perfil-magic.dropdown-toggle {
+    color: #00d4aa !important; /* Texto en Turquesa */
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    /* Borde Turquesa Pastel */
+    border: 2px solid #afeeee !important;
+    background-color: transparent !important;
+    border-radius: 50px !important;
+    padding: 5px 15px !important;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+/* Icono de la personita en Lila */
+.btn-perfil-magic i.bi-person-circle {
+    color: #c37bff !important; /* Lila místico */
+    filter: drop-shadow(0 0 3px rgba(195, 123, 255, 0.5));
+}
+
+/* La flecha del dropdown en Rosado */
+.btn-perfil-magic.dropdown-toggle::after {
+    color: #f480ff !important; /* Rosado claro */
+    margin-left: 10px;
+}
+
+/* Efecto al pasar el mouse */
+.btn-perfil-magic:hover {
+    border-color: #f480ff !important; /* El borde cambia a rosado */
+    box-shadow: 0 0 10px rgba(175, 238, 238, 0.4);
+    transform: translateY(-1px);
+}
+/* Enlace de Cerrar Sesión Fucsia Sutil */
+.dropdown-item.link-logout-magic {
+    color: #ff66b2 !important; /* Fucsia sutil */
+    transition: all 0.3s ease;
+    background: transparent !important;
+}
+
+.dropdown-item.link-logout-magic i {
+    color: #ff66b2 !important;
+}
+
+.dropdown-item.link-logout-magic:hover {
+    background-color: rgba(255, 102, 178, 0.1) !important; /* Fondo fucsia muy clarito al pasar el mouse */
+    color: #ff1493 !important; /* Fucsia un poco más intenso al hacer hover */
+}
+
+/* =========================================
+   3. TIENDA, FILTROS Y PRODUCTOS
+   ========================================= */
+ /* Unificamos los menús de Galería y Subir (Productos y Categorías) */
+ #imgTabCat .nav-link,
+ #imgTab .nav-link {
+     color: #6907ab !important; /* Texto morado */
+     border-radius: 12px !important;
+     margin: 2px;
+     transition: all 0.3s ease;
+ }
+
+ /* Botón Activo: Rosado Claro con texto blanco */
+ #imgTabCat .nav-link.active,
+ #imgTab .nav-link.active {
+     background-color: #f480ff !important; /* Rosado claro */
+     color: #ffffff !important; /* Texto blanco */
+     box-shadow: 0 4px 12px rgba(244, 128, 255, 0.4);
+     border: 1px solid #ffffff;
+ }
+
+ /* Efecto Hover para el que no está seleccionado */
+ #imgTabCat .nav-link:hover:not(.active),
+ #imgTab .nav-link:hover:not(.active) {
+     background-color: rgba(244, 128, 255, 0.15) !important;
+     color: #6907ab !important;
+ }
+
+.subcategorias-nav {
+    background: rgba(0, 0, 0, 0.05); padding: 15px; border-radius: 50px; backdrop-filter: blur(5px);
+}
+
+.btn-subcategoria {
+    color: #6907ab !important; font-weight: bold; text-transform: uppercase;
+    font-size: 0.85rem; letter-spacing: 1px; transition: all 0.3s ease;
+    border: 2px solid transparent; padding: 8px 18px; border-radius: 20px; text-decoration: none;
+}
+
+.btn-subcategoria:hover { color: #f480ff !important; background: white; }
+.btn-subcategoria.active { background: #6907ab; color: white !important; border-color: #f480ff; }
+
+.btn-filtro-magic {
+    padding: 10px 20px; border-radius: 30px; border: 2px solid #6907ab;
+    background: white; color: #6907ab; text-decoration: none; font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-filtro-magic.active, .btn-filtro-magic:hover {
+    background: #6907ab; color: white; box-shadow: 0 5px 15px rgba(105, 7, 171, 0.4);
+}
+
+.buscador-magico input, .selector-magico {
+    border: 2px solid #d9aaff !important; border-radius: 15px !important;
+}
+
+.btn-filtrar-magic {
+    background: #6907ab; color: white; border-radius: 15px; padding: 8px 25px;
+}
+
+/* TARJETA DE PRODUCTO */
+.card-magica {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(105, 7, 171, 0.1) !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; flex-direction: column; align-items: center; text-align: center; padding: 15px;
+}
+
+.card-magica:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(105, 7, 171, 0.2) !important;
+}
+
+.img-producto-redonda {
+    height: 180px; object-fit: contain; width: 100%;
+}
+
+.card-magica .card-body {
+    width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+
+.card-magica .card-title {
+    color: #333 !important; font-weight: bold; min-height: 45px;
+}
+
+.precio-magico {
+    color: #6907ab !important; font-weight: 800 !important;
+    font-size: 1.25rem !important; margin-top: 10px; display: block;
+}
+
+.card-magica .text-muted, .card-magica p.small {
+    color: #555555 !important; font-weight: 600; margin-bottom: 10px; display: block;
+}
+
+.card-magica .btn { margin-top: auto; width: 90%; }
+.precio-magico, .titulo-login-magico {
+    font-weight: 700 !important; /* Arial en 700 es negrita clásica, 800 ya se deforma */
+}
+.card-magica {
+    background-color: #ffffff !important;
+    border: 2px solid #f8f0ff !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex; flex-direction: column; align-items: center; text-align: center; padding: 15px;
+}
+
+.card-magica:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(105, 7, 171, 0.2) !important;
+    border-color: #6907ab !important;
+}
+
+.img-producto-redonda { height: 180px; object-fit: contain; width: 100%; transition: 0.5s; }
+.card-magica:hover .img-producto-redonda { transform: scale(1.05); }
+
+.card-magica .card-title { color: #6907ab !important; font-weight: 700; font-size: 1.1rem; min-height: 45px; }
+.card-magica .card-text { color: #f480ff !important; font-weight: 700 !important; font-size: 1.25rem !important; }
+
+/* =========================================
+   4. GESTIÓN ADMIN Y FORMULARIOS
+   ========================================= */
+   .precio-magico, .titulo-login-magico {
+       font-weight: 700 !important; /* Arial en 700 es negrita clásica, 800 ya se deforma */
+   }
+
+.card-gestion-magica, .card-magica-form {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 30px !important; border: 2px solid #d9aaff !important;
+}
+
+/* Contenedor principal del modal */
+.modal-magico {
+    border-radius: 30px !important;
+    border: 3px solid #f8f0ff !important;
+    overflow: hidden; /* Para que el header respete el radio del borde */
+    box-shadow: 0 15px 40px rgba(105, 7, 171, 0.2) !important;
+}
+
+/* Encabezado del modal con tu identidad visual */
+.header-magico-modal {
+    background: linear-gradient(135deg, #6907ab, #f480ff) !important;
+    border-bottom: none;
+    padding: 20px;
+}
+
+/* Botón de cerrar (X) personalizado */
+.modal-magico .btn-close {
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+    opacity: 0.8;
+}
+
+/* Botón "Revisar" (Secundario pastel) */
+.btn-revisar-modal {
+    background: #f8f0ff;
+    color: #6907ab;
+    border: 2px solid #d8bfd8;
+    border-radius: 50px;
+    padding: 10px 25px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-revisar-modal:hover {
+    background: #e6e6fa;
+    color: #4b0082;
+    border-color: #6907ab;
+    transform: scale(1.02);
+}
+
+/* UNIFICACIÓN DE BOTONES (DEGRADADO MORADO A ROSA) */
+.btn-magico, .btn-magico-login, .btn-guardar-magico,
+.btn-turquesa-magico, .btn-enviar-magic, .btn-unirse-magic {
+    background: linear-gradient(45deg, #6907ab, #f480ff) !important;
+    color: white !important; border: 2px solid #ffffff !important;
+    border-radius: 50px !important; padding: 10px 25px !important;
+    font-weight: 700 !important;
+    transition: all 0.4s ease !important;
+    box-shadow: 0 4px 15px rgba(105, 7, 171, 0.3);
+    display: inline-flex; align-items: center; justify-content: center;
+    text-decoration: none !important;
+}
+
+.btn-magico:hover, .btn-magico-login:hover, .btn-guardar-magico:hover,
+.btn-turquesa-magico:hover, .btn-enviar-magic:hover, .btn-unirse-magic:hover {
+    background: linear-gradient(45deg, #f480ff, #6907ab) !important;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(244, 128, 255, 0.5);
+}
+
+.titulo-login-magico {
+    color: #6907ab; font-weight: 800 !important;
+    text-transform: uppercase; letter-spacing: 2px;
+}
+
+.link-magico-login {
+    color: #6907ab !important; font-weight: 700 !important;
+    text-decoration: none !important; transition: 0.3s;
+}
+
+.link-magico-login:hover {
+    color: #f480ff !important; text-shadow: 0 0 8px rgba(244, 128, 255, 0.4);
+}
+
+/* Estilo base del textarea */
+.input-magico-foco {
+    border: 2px solid #d9aaff !important; /* Borde lila por defecto */
+    border-radius: 15px !important;
+    transition: all 0.3s ease-in-out;
+    background-color: #ffffff;
+}
+
+/* Efecto Mágico al hacer CLICK (Focus) */
+.input-magico-foco:focus {
+    border-color: #00d4aa !important; /* Cambia a Turquesa como los botones de admin */
+    box-shadow: 0 0 12px rgba(0, 212, 170, 0.4) !important; /* Brillo turquesa */
+    outline: none !important;
+    background-color: #fdfbff; /* Un tono muy levemente lila al escribir */
+}
+
+/* Color de la etiqueta arriba del textarea */
+.label-magico {
+    color: #6907ab !important;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-accion-editar i {
+    color: #6907ab !important; font-size: 1.2rem !important;
+    display: inline-block !important; visibility: visible !important;
+}
+
+.btn-accion-eliminar { color: #ff1493 !important; font-size: 1.3rem; text-decoration: none !important; }
+
+#preview { width: 320px; height: 320px; object-fit: cover; border-radius: 15px; border: 2px solid #f480ff; }
+
+   /* --- ESTILO ÚNICO PARA EL MODAL DE PRODUCTOS --- */
+
+   /* 1. Contenedor principal del modal */
+   #modalConfirmarProducto .modal-content {
+       border-radius: 25px !important;
+       border: none !important;
+       overflow: hidden;
+       box-shadow: 0 15px 35px rgba(105, 7, 171, 0.2) !important;
+       background: linear-gradient(to bottom, #ffffff, #f9f4ff);
+   }
+
+   /* 2. Cabecera con degradado místico */
+   #modalConfirmarProducto .modal-header {
+       background: linear-gradient(135deg, #6907ab 0%, #a252ee 100%) !important;
+       color: white !important;
+       border-bottom: none;
+       padding: 1.5rem;
+   }
+
+   #modalConfirmarProducto .modal-title {
+       font-weight: 700;
+       letter-spacing: 0.5px;
+   }
+
+   /* 3. Botón de cerrar (X) en blanco */
+   #modalConfirmarProducto .btn-close {
+       filter: brightness(0) invert(1); /* Lo vuelve blanco */
+       opacity: 0.8;
+   }
+
+   /* 4. Cuerpo del modal */
+   #modalConfirmarProducto .modal-body {
+       padding: 2.5rem 1.5rem;
+       color: #4a4a4a;
+   }
+
+   #modalConfirmarProducto .modal-body p {
+       font-size: 1.1rem;
+       line-height: 1.6;
+   }
+
+   /* 5. Pie del modal y botones */
+   #modalConfirmarProducto .modal-footer {
+       border-top: none;
+       padding-bottom: 2rem;
+       background-color: transparent;
+   }
+
+   /* Botón "Revisar" (Secundario) */
+   #modalConfirmarProducto .btn-outline-secondary {
+       border-radius: 50px;
+       padding: 0.6rem 2rem;
+       border: 2px solid #ddd;
+       color: #777;
+       font-weight: 600;
+       transition: all 0.3s ease;
+   }
+
+   #modalConfirmarProducto .btn-outline-secondary:hover {
+       background-color: #f0f0f0;
+       color: #333;
+   }
+
+   /* Botón "¡Sí, Guardar!" (Primario Turquesa) */
+   #modalConfirmarProducto .btn-primary {
+       background-color: #00d4aa !important;
+       border: none !important;
+       border-radius: 50px;
+       padding: 0.6rem 2.5rem;
+       font-weight: 700;
+       text-transform: uppercase;
+       letter-spacing: 1px;
+       transition: all 0.3s ease;
+       box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+   }
+
+   #modalConfirmarProducto .btn-primary:hover {
+       background-color: #00b38f !important;
+       transform: translateY(-2px);
+       box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
+   }
+
+   /* 1. Contenedor y Bordes */
+   #deleteSubModal .modal-content {
+       border-radius: 28px !important;
+       border: none !important;
+       overflow: hidden;
+       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+       background: #ffffff;
+   }
+
+   /* 2. Header con Degradado de Alerta Suave */
+   #deleteSubModal .modal-header {
+       background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%) !important;
+       color: white !important;
+       border-bottom: none;
+       padding: 1.5rem;
+   }
+
+   #deleteSubModal .modal-title {
+       font-size: 1.3rem;
+       font-weight: 700;
+       letter-spacing: -0.5px;
+   }
+
+   #deleteSubModal .btn-close {
+       filter: brightness(0) invert(1); /* X en blanco */
+       opacity: 0.9;
+   }
+
+   /* 3. Cuerpo del Modal */
+   #deleteSubModal .modal-body {
+       padding: 2.5rem 2rem;
+       background-color: #fffbff;
+   }
+
+   /* Estilo para el nombre de la subcategoría que se va a borrar */
+   #nombreSubBorrar {
+       display: inline-block;
+       color: #ff416c;
+       font-size: 1.5rem;
+       background: rgba(255, 65, 108, 0.05);
+       padding: 5px 15px;
+       border-radius: 12px;
+       margin-top: 10px;
+   }
+
+   /* Alerta de advertencia interna */
+   .alert-sub-warning {
+       background-color: #fff4f4;
+       border-left: 4px solid #ff416c;
+       border-radius: 10px;
+       color: #853b3b;
+       padding: 1rem;
+       margin-top: 1.5rem;
+   }
+
+   /* 4. Footer y Botones */
+   #deleteSubModal .modal-footer {
+       border-top: none;
+       padding: 0 2rem 2.5rem 2rem;
+       gap: 15px;
+   }
+
+   /* Botón Cancelar */
+   #deleteSubModal .btn-secondary,
+   #deleteSubModal .btn-revisar-modal {
+       background-color: #f2f2f2 !important;
+       color: #666 !important;
+       border: none !important;
+       border-radius: 50px;
+       padding: 12px 25px;
+       font-weight: 600;
+       transition: all 0.3s ease;
+   }
+
+   #deleteSubModal .btn-secondary:hover {
+       background-color: #e6e6e6 !important;
+   }
+
+   /* Botón Eliminar (El "Hechizo de Desvanecimiento") */
+   #deleteSubModal .btn-danger,
+   #deleteSubModal .btn-desvanecer-confirmar {
+       background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%) !important;
+       border: none !important;
+       border-radius: 50px;
+       color: white !important;
+       padding: 12px 30px;
+       font-weight: 700;
+       text-transform: uppercase;
+       font-size: 0.9rem;
+       letter-spacing: 1px;
+       box-shadow: 0 8px 15px rgba(255, 65, 108, 0.3);
+       transition: all 0.3s ease;
+   }
+
+   #deleteSubModal .btn-danger:hover {
+       transform: translateY(-3px);
+       box-shadow: 0 12px 20px rgba(255, 65, 108, 0.4);
+       filter: brightness(1.1);
+   }
+
+        .card-header h4 { color: #00d4aa; }
+
+        .alert-magica-success {
+            background: linear-gradient(135deg, #e6fffa 0%, #ffffff 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 5px solid #00d4aa !important;
+        }
+        .icon-circle-success {
+            background-color: #00d4aa;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 212, 170, 0.3);
+        }
+
+
+.btn-magico, .btn-guardar-magico, .btn-enviar-magic {
+    background: linear-gradient(45deg, #6907ab, #f480ff) !important;
+    color: white !important; border: 2px solid #ffffff !important;
+    border-radius: 50px !important; padding: 10px 25px !important; font-weight: 700 !important;
+}
+
+.btn-magico-sm {
+    background: linear-gradient(45deg, #afeeee, #d8bfd8) !important;
+    color: #4b0082 !important; border: none !important; border-radius: 50px !important;
+    padding: 8px 20px !important; font-size: 0.9rem !important; font-weight: 700 !important;
+}
+
+/* Modales */
+.modal-magico { border-radius: 30px !important; border: 3px solid #f8f0ff !important; overflow: hidden; }
+.header-magico-modal { background: linear-gradient(135deg, #6907ab, #f480ff) !important; border: none; }
+
+.modal-magico-danger { border-radius: 30px !important; border: 3px solid #fff0f0 !important; overflow: hidden; }
+.header-eliminar-modal { background: linear-gradient(135deg, #6907ab, #ff6b6b) !important; border: none; }
+
+.btn-desvanecer-confirmar {
+    background: linear-gradient(45deg, #ff6b6b, #6907ab) !important;
+    color: white !important; border-radius: 50px !important; font-weight: 700 !important;
+}
+
+/* =========================================
+   5. TABLAS Y CARRITO (DISEÑO)
+   ========================================= */
+.table thead tr { background-color: #f8f0ff !important; border-bottom: 2px solid #6907ab; }
+.table tbody tr td img.rounded-3 { transition: 0.3s; border: 2px solid #f480ff !important; }
+.table tbody tr:hover td img.rounded-3 { transform: scale(1.1); }
+
+/* =========================================
+   6. RESPONSIVE (EL CORAZÓN DE LA PÁGINA)
+   ========================================= */
+img { max-width: 100%; height: auto; }
+
+/* --- Tablets y Escritorio (768px +) --- */
+@media screen and (min-width: 768px) {
+    .colorFondoBoton { border-radius: 50px; width: 597px !important; }
+    .btn-group .btn { font-size: 20px; }
+    #boton1, #boton2, #boton3 { width: 200px; }
+    .carrito-producto-imagen { width: 120px; border-radius: 100px; }
+}
+
+/* --- Móviles (Hasta 767px) --- */
+@media screen and (max-width: 767px) {
+    #miCarrusel .carousel-item img { height: 250px; }
+    .colorFondoBoton { width: 75%; }
+    .carrito-producto { flex-direction: column; text-align: center; gap: 15px; }
+    .table-responsive { display: block; width: 100%; overflow-x: auto; }
+    .card-magica { margin-bottom: 20px; width: 100%; }
+    .admin-nav-links-dark { flex-direction: column; align-items: center; gap: 10px; }
+}
+
+/* --- Móviles Pequeños (320px) --- */
+@media screen and (max-width: 320px) {
+    body { font-size: 14px; }
+    #comienzoHome img { width: 180px; }
+    .btn-subir-fijo img { width: 50px; height: 50px; }
+    .btn-magico, .btn-magico-sm { font-size: 0.75rem !important; padding: 6px 10px !important; }
+    .table td, .table th { font-size: 0.7rem !important; padding: 4px !important; }
+    .img-producto-redonda { height: 120px; }
+    h4 { font-size: 0.9rem; }
+    #numerito { width: 14px; height: 14px; font-size: 9px; top: -3px; right: -5px; }
+}
+
+/* --- Footer --- */
+.footer-magico.bg-dark-magic { background-color: #000000 !important; border-top: 3px solid #6907ab !important; }
+.link-social-footer { color: #ffffff !important; transition: 0.3s; }
+.link-social-footer:hover { color: #00d4aa !important; transform: translateX(5px); }
+
+/* =========================================
+   RESPONSIVE ESPECÍFICO PARA USER-LIST
+   ========================================= */
+
+@media screen and (max-width: 767px) {
+    /* Ajustes del Header de la Card */
+    .card-header.header-con-borde {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    /* Transformar tabla en bloques para móviles */
+    .modal-dialog { margin: 10px; }
+}
+
+@media screen and (max-width: 576px) {
+    /* Escondemos el header de la tabla original */
+    .table-responsive thead {
+        display: none;
+    }
+
+    /* Cada fila se convierte en una "card" individual */
+    .table-responsive tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 2px solid #f8f0ff;
+        border-radius: 20px;
+        padding: 10px;
+        background: #fff;
+        box-shadow: 0 4px 10px rgba(105, 7, 171, 0.05);
+    }
+
+    .table-responsive tbody td {
+        display: flex;
+        justify-content:间-between;
+        align-items: center;
+        text-align: right !important;
+        border-bottom: 1px solid #f8f0ff;
+        padding: 10px 15px !important;
+    }
+
+    .table-responsive tbody td:last-child {
+        border-bottom: none;
+        justify-content: center;
+    }
+
+    /* Agregamos etiquetas automáticas para saber qué es cada dato */
+    .table-responsive tbody td::before {
+        content: attr(data-label); /* Usa un atributo que pondremos en el JSP */
+        float: left;
+        font-weight: bold;
+        color: #6907ab;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+    }
+
+    /* Ajuste de botones de acción en móvil */
+    .acciones-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        width: 100%;
+    }
+
+
+    /* =========================================
+       RESTAURACIÓN DE VALIDACIONES
+       ========================================= */
+
+    /* 1. Forzar Borde Rojo en Campos Vacíos/Inválidos */
+    .needs-validation.was-validated .form-control:invalid,
+    .needs-validation.was-validated .form-select:invalid {
+        border: 2px solid #dc3545 !important; /* Rojo Bootstrap */
+        box-shadow: 0 0 5px rgba(220, 53, 69, 0.2) !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right calc(0.375em + 0.1875rem) center !important;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem) !important;
+    }
+
+    /* 2. Forzar Borde Verde en Campos Correctos */
+    .needs-validation.was-validated .form-control:valid,
+    .needs-validation.was-validated .form-select:valid {
+        border: 2px solid #198754 !important; /* Verde Bootstrap */
+        box-shadow: none !important;
+    }
+
+    /* 3. Asegurar que los mensajes de error (si los tienes) se vean */
+    .invalid-feedback {
+        display: none;
+        color: #dc3545;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-top: 4px;
+    }
+
+    .was-validated :invalid ~ .invalid-feedback {
+        display: block;
+    }
+
+    /* =========================================
+       RESTAURACIÓN DE VALIDACIONES MÁGICAS
+       ========================================= */
+
+    /* 1. Cuando el campo es INVÁLIDO (Edad < 0 o > 150) */
+    .was-validated .form-control:invalid,
+    .form-control:invalid {
+        border: 2px solid #ff6b6b !important; /* Rojo suave mágico */
+        box-shadow: 0 0 10px rgba(255, 107, 107, 0.2) !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ff6b6b'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ff6b6b' stroke='none'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right calc(0.375em + 0.1875rem) center !important;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem) !important;
+    }
+
+    /* 2. Cuando el campo es VÁLIDO (Todo correcto) */
+    .was-validated .form-control:valid,
+    .form-control:valid {
+        border: 2px solid #00d4aa !important; /* Tu turquesa de éxito */
+        box-shadow: none !important;
+    }
+
+    /* 3. Mensaje de error debajo del input */
+    .invalid-feedback {
+        display: none;
+        color: #ff6b6b !important;
+        font-weight: 700;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        padding-left: 5px;
+    }
+
+    /* Solo mostrar el mensaje si hay un error real */
+    .was-validated :invalid ~ .invalid-feedback,
+    :invalid ~ .invalid-feedback {
+        display: block;
+    }
+
+/* Esto fuerza el color rojo sobre tus estilos personalizados 'input-magico' */
+form.was-validated .form-control:invalid {
+    border-color: #dc3545 !important;
+    background-image: none !important; /* Quita el icono de Bootstrap si estorba */
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+}
+
+form.was-validated .form-control:valid {
+    border-color: #198754 !important;
+}
+
+/* Color para el Toast de éxito */
+.bg-magico {
+    background: linear-gradient(45deg, #6907ab, #f480ff) !important;
+    border-radius: 15px;
+}
+
+/* Forzar que el error se vea rojo aunque no uses JS para validar */
+input:invalid:focus {
+    border-color: #ff6b6b !important;
+    box-shadow: 0 0 8px rgba(255, 107, 107, 0.5) !important;
+}
+
+/* Si el campo está vacío o mal, borde rojo MANDATORIO */
+.was-validated .form-control:invalid {
+    border: 2px solid #ff6b6b !important;
+}
+
+/* Si el campo está bien, tu turquesa de siempre */
+.was-validated .form-control:valid {
+    border: 2px solid #00d4aa !important;
+}
+
+/* =========================================
+   11. CARRITO DE COMPRAS Y PEDIDOS
+   ========================================= */
+
+/* --- Carrito vacío --- */
+.carrito-vacio-box {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 25px;
+    padding: 3rem 2rem;
+    box-shadow: 0 4px 20px rgba(105, 7, 171, 0.1);
+}
+
+/* --- Tarjeta principal del carrito --- */
+.carrito-card {
+    border-radius: 20px !important;
+    overflow: hidden;
+}
+
+.carrito-thead th {
+    background: linear-gradient(135deg, #6907ab, #a040e0);
+    color: white;
+    font-weight: 700;
+    border: none;
+    padding: 1rem 0.75rem;
+}
+
+/* --- Imagen del producto en el carrito --- */
+.carrito-img-producto {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 2px solid rgba(105, 7, 171, 0.15);
+}
+
+/* --- Controles de cantidad --- */
+.btn-cantidad-magic {
+    background: linear-gradient(135deg, #6907ab, #f480ff);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-cantidad-magic:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(105, 7, 171, 0.4);
+    color: white;
+}
+
+.cantidad-display {
+    min-width: 28px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* --- Botón eliminar ítem --- */
+.btn-eliminar-item-magic {
+    background: transparent;
+    color: #dc3545;
+    border: 2px solid #dc3545;
+    transition: all 0.2s;
+}
+
+.btn-eliminar-item-magic:hover {
+    background: #dc3545;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* --- Panel de resumen del carrito / checkout --- */
+.carrito-resumen-card {
+    border-radius: 20px !important;
+}
+
+.carrito-resumen-header {
+    background: linear-gradient(135deg, #6907ab, #f480ff) !important;
+    border-radius: 20px 20px 0 0 !important;
+    padding: 1rem;
+}
+
+/* --- Checkout --- */
+.checkout-card {
+    border-radius: 20px !important;
+    overflow: hidden;
+}
+
+.checkout-card-header {
+    background: linear-gradient(135deg, rgba(105, 7, 171, 0.1), rgba(244, 128, 255, 0.1)) !important;
+    border-bottom: 2px solid rgba(105, 7, 171, 0.15) !important;
+    padding: 1rem 1.5rem;
+    color: #6907ab;
+}
+
+/* --- Pasos del checkout --- */
+.checkout-pasos {
+    align-items: center;
+}
+
+.checkout-paso {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.paso-numero {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(105, 7, 171, 0.15);
+    color: #6907ab;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.checkout-paso.activo .paso-numero {
+    background: linear-gradient(135deg, #6907ab, #f480ff);
+    color: white;
+    box-shadow: 0 4px 15px rgba(105, 7, 171, 0.4);
+}
+
+.checkout-paso.completado .paso-numero {
+    background: #00d4aa;
+    color: white;
+}
+
+.paso-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6907ab;
+}
+
+.checkout-paso-linea {
+    height: 2px;
+    width: 60px;
+    background: rgba(105, 7, 171, 0.2);
+    align-self: flex-start;
+    margin-top: 19px;
+}
+
+/* --- Confirmación --- */
+.confirmacion-card {
+    border-radius: 20px !important;
+    overflow: hidden;
+}
+
+.confirmacion-sidebar {
+    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+}
+
+.badge-pedido-id {
+    background: linear-gradient(135deg, rgba(105, 7, 171, 0.1), rgba(244, 128, 255, 0.15));
+    border: 2px solid rgba(105, 7, 171, 0.2);
+    border-radius: 30px;
+    color: #6907ab;
+    font-size: 1.1rem;
+}
+
+/* --- Badges de estado de pedido --- */
+.estado-pedido-badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.45em 0.9em;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.estado-pedido-badge.PENDIENTE    { background: #fff3cd; color: #856404; }
+.estado-pedido-badge.CONFIRMADO   { background: #d1e7dd; color: #0f5132; }
+.estado-pedido-badge.EN_PREPARACION { background: #cfe2ff; color: #084298; }
+.estado-pedido-badge.ENVIADO      { background: #e2d9f3; color: #6f42c1; }
+.estado-pedido-badge.ENTREGADO    { background: #00d4aa20; color: #0a7a5f; border: 1px solid #00d4aa; }
+.estado-pedido-badge.CANCELADO             { background: #f8d7da; color: #842029; }
+.estado-pedido-badge.DEVOLUCION_SOLICITADA { background: #fff3cd; color: #6f3800; border: 1px solid #fd7e14; }
+.estado-pedido-badge.DEVOLUCION_REALIZADA  { background: #d1e7dd; color: #0a5c36; border: 1px solid #75b798; }
+
+/* --- Lista de pedidos (cliente) --- */
+.pedidos-list-card {
+    background: rgba(255, 255, 255, 0.88);
+    border-radius: 18px !important;
+    box-shadow: 0 2px 12px rgba(105, 7, 171, 0.08) !important;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pedidos-list-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(105, 7, 171, 0.15) !important;
+}

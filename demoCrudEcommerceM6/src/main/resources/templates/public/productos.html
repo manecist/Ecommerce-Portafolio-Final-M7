@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<main class="container mt-5">
+    <div id="comienzoHome">
+        <div th:if="${not #lists.isEmpty(productos)}"
+             class="container mt-5 shadow p-5 text-center"
+             style="border-radius: 30px; background: rgba(255,255,255,0.8);">
+            <h1 class="display-3 fw-bolder text-uppercase"
+                th:text="${idCatActual != null and idCatActual > 0} ? ${productos[0].subcategoria.categoria.nombre} : 'Catálogo Completo'">
+            </h1>
+            <div class="lead fst-italic">
+                <h4 class="fw-bolder">✨ Tu Magia, Tu Estilo: La Selección de Magical Alliance</h4>
+                <h6 class="px-lg-5">Cada artículo es un objeto de poder diseñado para infundir tu día a día con energía de fantasía.</h6>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(productos)}"
+             class="container mt-5 shadow p-5 text-center"
+             style="border-radius: 30px; background: rgba(255,255,255,0.6);">
+            <h1 class="display-3 fw-bolder text-uppercase">Próximamente...</h1>
+            <p class="lead fw-bold">✨ El inventario mágico está siendo canalizado ✨</p>
+            <h6 class="px-lg-5">Nuevos tesoros están por manifestarse en esta sección. Vuelve pronto para descubrir su energía.</h6>
+        </div>
+    </div>
+
+    <div class="container mt-3">
+        <div th:if="${success != null}"
+             class="alert alert-success alert-dismissible fade show shadow-sm border-0"
+             role="alert" style="border-radius: 15px; background-color: #d1e7dd; color: #0f5132;">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <strong>✨ ¡Hechizo realizado!</strong> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${error != null}"
+             class="alert alert-danger alert-dismissible fade show shadow-sm border-0"
+             role="alert" style="border-radius: 15px;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>💥 Error:</strong> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+
+    <div sec:authorize="hasRole('ADMIN')" class="d-flex justify-content-center my-4">
+        <a th:href="@{/productos/admin/gestion}"
+           class="btn btn-turquesa-magico shadow-sm px-5 py-3 btn-lg">
+            <i class="bi bi-plus-circle-fill me-2"></i> Registrar Nuevo Tesoro Mágico
+        </a>
+    </div>
+
+    <div class="container my-4">
+        <form th:action="@{/productos}" method="GET"
+              class="row g-2 align-items-center justify-content-center mb-4">
+            <input type="hidden" name="idCategoria" th:value="${idCatActual}">
+
+            <div class="col-md-4">
+                <div class="input-group buscador-magico shadow-sm">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" name="txtBuscar" class="form-control border-start-0"
+                           placeholder="Buscar por nombre..." th:value="${param.txtBuscar}">
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <select name="orden" class="form-select selector-magico shadow-sm">
+                    <option value="recom" th:selected="${param.orden == 'recom'}">✨ Recomendados</option>
+                    <option value="az" th:selected="${param.orden == 'az'}">🔤 Nombre: A - Z</option>
+                    <option value="za" th:selected="${param.orden == 'za'}">🔤 Nombre: Z - A</option>
+                    <option value="pmin" th:selected="${param.orden == 'pmin'}">💰 Precio: Menor a Mayor</option>
+                    <option value="pmax" th:selected="${param.orden == 'pmax'}">💰 Precio: Mayor a Menor</option>
+                </select>
+            </div>
+
+            <div class="col-md-auto d-flex gap-2">
+                <button type="submit" class="btn btn-filtrar-magic fw-bold">Filtrar</button>
+                <a th:href="@{/productos}" class="btn btn-limpiar-magic">Limpiar</a>
+            </div>
+        </form>
+
+        <div class="text-center mb-3">
+            <a th:href="@{/productos}" class="btn btn-outline-secondary rounded-pill">
+                ✨ Ver Catálogo Completo
+            </a>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-center gap-3 subcategorias-container">
+            <th:block th:if="${idCatActual == null or idCatActual == 0}">
+                <a th:each="cat : ${listaCategorias}"
+                   th:href="@{/productos(idCategoria=${cat.id})}"
+                   class="btn-filtro-magic" th:text="${cat.nombre}">
+                </a>
+            </th:block>
+
+            <th:block th:unless="${idCatActual == null or idCatActual == 0}">
+                <a th:if="${not #lists.isEmpty(productos)}"
+                   th:href="@{/productos(idCategoria=${idCatActual})}"
+                   class="btn-filtro-magic" th:classappend="${idSubCatActual == null or idSubCatActual == 0} ? 'active' : ''"
+                   th:text="'Ver todos los ' + ${productos[0].subcategoria.categoria.nombre}">
+                </a>
+
+                <a th:if="${#lists.isEmpty(productos)}"
+                   th:href="@{/productos(idCategoria=${idCatActual})}"
+                   class="btn-filtro-magic active">
+                    ✨ Ver todos los Tesoros
+                </a>
+
+                <a th:each="sub : ${listaSubcategorias}"
+                   th:href="@{/productos(idCategoria=${idCatActual}, idSubcategoria=${sub.id})}"
+                   class="btn-filtro-magic" th:classappend="${idSubCatActual == sub.id} ? 'active' : ''"
+                   th:text="${sub.nombre}">
+                </a>
+            </th:block>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3" th:each="p : ${productos}">
+            <div class="card h-100 shadow-sm border-0 card-magica">
+                <img th:src="${p.imagen != null and !#strings.contains(p.imagen, '/')} ? @{'/productos/' + ${p.imagen}} : @{'/assets/img/' + ${p.imagen}}"
+                     class="card-img-top p-3 img-producto-redonda" th:alt="${p.nombre}">
+
+                <div class="card-body text-center d-flex flex-column">
+                    <h5 class="fw-bold" th:text="${p.nombre}"></h5>
+                    <p class="text-muted small mb-2" th:text="${p.descripcion}"></p>
+                    <span class="badge bg-light text-dark mb-3 mx-auto border"
+                          th:text="${p.subcategoria.nombre}"></span>
+
+                    <div class="mb-3 mt-auto">
+                        <h3 class="fw-bold mb-1 precio-magico"
+                            th:text="'$ ' + ${#numbers.formatInteger(p.precio, 0, 'POINT')}">
+                        </h3>
+
+                        <div th:if="${p.stock > 0}">
+                            <small class="stock-disponible fw-bold">
+                                <i class="bi bi-stars"></i> Stock: <span th:text="${p.stock}"></span>
+                            </small>
+                        </div>
+                        <div th:unless="${p.stock > 0}">
+                            <small class="stock-agotado fw-bold">
+                                <i class="bi bi-x-circle"></i> Agotado
+                            </small>
+                        </div>
+                    </div>
+
+                    <div th:if="${p.stock > 0}">
+                        <button th:attr="data-id=${p.id}, data-nombre=${p.nombre}"
+                                onclick="agregarAlCarrito(this.dataset.id, this.dataset.nombre)"
+                                class="btn btn-magico w-100 py-2 fw-bold shadow-sm rounded-pill text-white mb-2">
+                            Añadir 🌙
+                        </button>
+                    </div>
+                    <div th:unless="${p.stock > 0}">
+                        <button class="btn btn-secondary w-100 py-2 rounded-pill disabled mb-2" disabled>Sin Stock</button>
+                    </div>
+
+                    <div sec:authorize="hasRole('ADMIN')" class="mt-3 pt-3 border-top d-flex gap-2">
+                        <a th:href="@{/productos/admin/gestion(action='edit', id=${p.id})}"
+                           class="btn btn-editar-magico btn-sm flex-fill rounded-pill">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+
+                        <button th:onclick="confirmarEliminar([[${p.id}]], [[${p.nombre}]])"
+                                class="btn btn-eliminar-magico btn-sm flex-fill rounded-pill">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade modal-eliminar-magico" id="modalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+            <div class="modal-header text-white">
+                <h5 class="modal-title fw-bold">⚠️ ¿Desvanecer este Tesoro?</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="text-muted mb-2">Estás a punto de eliminar permanentemente:</p>
+                <h5 id="nombreProdEliminar" class="fw-bold" style="color: #6907ab;"></h5>
+            </div>
+            <div class="modal-footer bg-light border-0 d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Conservar</button>
+                <form id="formEliminarProd" method="post" action="#">
+                    <button type="submit" class="btn btn-eliminar-magico px-4">Sí, Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+
+
+</body>
+</html>

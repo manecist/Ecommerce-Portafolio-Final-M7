@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Magical Alliance - Página No Encontrada</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/assets/css/error.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/estilohome.css}">
+
+</head>
+<body class="cuerpoError">
+
+<div class="error-card">
+
+    <div class="estrellitas mb-3">✦ ✦ ✦ MAGICAL ALLIANCE ✦ ✦ ✦</div>
+
+    <div class="magic-icon404 mb-2">
+        <i class="bi bi-search-heart"></i>
+    </div>
+
+    <div class="codigo-error404">404</div>
+
+    <h1 class="titulo-error">Objeto Desvanecido en el Reino</h1>
+
+    <hr class="separador404">
+
+    <p class="mensaje-error">
+        <strong style="color: #ffd700;" th:text="${errorTitulo}">Página No Encontrada</strong><br>
+        <span th:text="${errorMensaje}">Parece que este rincón del universo ha desaparecido o nunca existió.</span><br><br>
+        <em style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">Verifica que la dirección sea correcta o regresa al inicio.</em>
+    </p>
+
+    <hr class="separador404">
+
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a th:href="@{/home}" class="btn-regresar">
+            <i class="bi bi-house-heart-fill me-2"></i>Regresar al Reino
+        </a>
+        <a th:href="@{/login}" class="btn-login">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+        </a>
+    </div>
+
+    <p class="mt-4 mb-0" style="color: rgba(255,255,255,0.2); font-size: 0.75rem;">
+        "Libérate de las sombras y vuelve al camino..." ✨
+    </p>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
