@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<main>
+    <div class="container mt-4 d-flex justify-content-center">
+        <div class="subcategorias-nav w-100 d-flex justify-content-center gap-2 flex-wrap">
+            <a th:each="cat, status : ${listaCategorias}"
+               class="btn-subcategoria"
+               th:id="'boton' + ${status.count}"
+               th:href="@{/productos(action='list', idCategoria=${cat.id})}"
+               th:text="${cat.nombre}">
+            </a>
+        </div>
+    </div>
+
+    <div class="container-fluid d-flex">
+        <div class="container text-center mt-5 mx-auto pt-2 shadow"
+             id="comienzoHome" style="border-radius: 30px;">
+            <img th:src="@{/assets/img/logottttt.png}" alt="Logo"
+                 class="img-fluid pt-3" width="400">
+            <div class="lead fst-italic mt-4 p-3">
+                ¿Recuerdas la magia de la transformación? Inspirada en la fuerza
+                estelar de Sailor Moon y el encanto dulce de Sakura Card Captor,
+                Magical Alliance es una invitación a vivir tu propia fantasía.
+                <p class="fw-bolder fst-italic pb-3">¡Es hora de dejar que tu luz brille!</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="miCarrusel" class="carousel slide mt-5 shadow-lg mx-auto"
+         data-bs-ride="carousel"
+         style="max-width: 400px; border-radius: 30px; overflow: hidden; border: 4px solid white;">
+
+        <div class="carousel-indicators">
+            <button th:each="cat, status : ${listaCategorias}"
+                    type="button" data-bs-target="#miCarrusel"
+                    th:data-bs-slide-to="${status.index}"
+                    th:classappend="${status.first} ? 'active' : ''"></button>
+        </div>
+
+        <div class="carousel-inner">
+            <div th:each="cat, status : ${listaCategorias}"
+                 class="carousel-item"
+                 th:classappend="${status.first} ? 'active' : ''"
+                 data-bs-interval="4000">
+                <a th:href="@{/productos(action='list', idCategoria=${cat.id})}">
+                    <img th:src="${cat.imagenBanner != null ? '/assets/img/' + cat.imagenBanner : '/assets/img/logottttt.png'}"
+                         class="d-block w-100 mx" th:alt="${cat.nombre}">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3 class="fw-bold text-uppercase" th:text="${cat.nombre}"></h3>
+                        <p>Haz clic para explorar esta colección mágica</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#miCarrusel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#miCarrusel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <div class="container mt-5">
+        <div class="text-center mb-4">
+            <h3 class="fw-bold" style="color: #6907ab;">✨ Tesoros Recién Llegados ✨</h3>
+            <p class="text-muted italic">Las últimas novedades de nuestro reino mágico</p>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col" th:each="prod, iter : ${listaProductos}" th:if="${iter.index < 3}">
+                <div class="card h-100 shadow-sm border-magico card-magica">
+                    <img th:src="${prod.imagen != null ? '/assets/img/' + prod.imagen : '/assets/img/logottttt.png'}"
+                         class="card-img-top" th:alt="${prod.nombre}"
+                         style="height: 200px; object-fit: cover; border-bottom: 2px solid #f8f0ff;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold" th:text="${prod.nombre}"></h5>
+                        <p class="card-text fw-bold" style="color: #f480ff;">
+                            $ <span th:text="${prod.precio != null ? #numbers.formatDecimal(prod.precio, 0, 'POINT', 0, 'POINT') : '0'}"></span>
+                        </p>
+                        <a th:href="@{/productos(action='list')}" class="btn btn-magico-sm px-4">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid d-flex">
+        <div class="container text-center mt-5 mx-auto shadow" id="tipBelleza">
+            <div class="container-fluid d-flex justify-content-center pt-4">
+                <h4 class="fw-bold ps-1">🎨 El Secreto de la Transformación: Encuentra tu Estación Mágica</h4>
+            </div>
+            <div class="mt-4">
+                Conocer tu colorimetría es el primer paso para dominar tu poder estelar.
+                Se basa en identificar si tus tonos base son fríos (azules o rosados)
+                o cálidos (dorados o melocotón) y qué tan vibrantes o suaves son,
+                clasificándote en una de las cuatro estaciones.
+                <div>
+                    <p class="pt-3">
+                        <strong class="fst-italic">🔍 Paso 1: Identifica tu Tono Base;
+                                                   Mira tus venas en la muñeca (a la luz natural),</strong>
+                        si tu venas son verdes eres: cálido, pero si son azules o violetas
+                        eres: frío y si no distingues tu color o es una mezcla eres: neutral.
+                        sí resultas ser de color neutral; adivina...!! todos los colores te quedan estupendo.
+                    </p>
+                    <p>
+                        <strong class="fst-italic pb-3">🌟 Paso 2: Tu Estación de Poder;
+                                                        Tu estación te indica tu paleta de colores ideal para que tu belleza
+                                                        brille como un cristal de poder.</strong> Recuerda las estaciones son
+                                                                                                  solo un ejemplo, ya que cada estación está ligada a tu color base,
+                                                                                                  es decir, una persona con tono base FRÍO no puede ser "Otoño", ya
+                                                                                                  que Otoño es una estación de tonalidades cálidas. De la misma manera,
+                                                                                                  una persona con tono base CÁLIDO no podría ser "Verano".
+                    </p>
+                </div>
+            </div>
+            <img th:src="@{/assets/img/colorimetria.jpg}" alt="" class="img-fluid imagenTips"
+                 width="500px" height="500px">
+            <p class="fw-bolder fst-italic pt-3 pb-3">
+                Elige tu vestuario y maquillaje de Magical Alliance dentro de tu estación
+                para que tu look se sienta como un hechizo perfecto y armonioso.
+            </p>
+        </div>
+    </div>
+
+    <div class="container-fluid d-flex">
+        <div class="container mt-5 mx-auto shadow" id="tipSombra">
+            <div class="container-fluid d-flex justify-content-center pt-4">
+                <h4 class="fw-bold ps-1">🎨 Tu Mirada Hechizada: Secretos de Sombras y Delineados</h4>
+            </div>
+            <div class="mt-4">
+                <p class="text-center">
+                    ¡Despierta el poder de tus ojos! Con Magical Alliance, cada parpadeo
+                    será un conjuro de encanto. Aquí te revelamos los trucos de las
+                    guardianas para una mirada tan mágica como impactante:
+                </p>
+                <div>
+                    <ul class="pt-3">
+                        <strong class="fst-italic">✨ El Poder de la Sombra: Tu Paleta de Hechizos</strong>
+                        <li>
+                            <strong>Prepara tu Lienzo Mágico:</strong> ¡Nunca saltes la prebase!
+                                                                       Es el escudo que intensifica tus pigmentos y mantiene tus sombras
+                                                                       de Magical Alliance impecables, sin pliegues, ¡como por arte de magia!
+                        </li>
+                        <li>
+                            <strong>La Luz Guía el Camino:</strong> Aplica los tonos claros y
+                                                                    brillantes en el centro del párpado y el lagrimal para abrir tu mirada.
+                                                                    Los tonos medios en el pliegue y los oscuros en la esquina exterior,
+                                                                    para dar profundidad.
+                        </li>
+                        <li>
+                            <strong>Difuminado de Ensueño:</strong> Con una brocha suave,
+                                                                    realiza movimientos circulares y suaves para que los colores
+                                                                    se fusionen como un halo místico, sin dejar rastro de líneas duras.
+                        </li>
+                    </ul>
+                    <ul class="pt-3 pb-3">
+                        <strong class="fst-italic">✍️ El Poder del Delineado: Trazos de Precisión</strong>
+                        <li>
+                            <strong>Pulso Firme:</strong> ¡Encuentra tu centro! Apoya tu codo para
+                                                          estabilizar tu mano. Un pulso firme es la clave para un trazo tan
+                                                          preciso como una flecha encantada.
+                        </li>
+                        <li>
+                            <strong>Puntos de Conexión:</strong> ¿Temblor al dibujar? Dibuja pequeños
+                                                                 puntos o guiones a lo largo de tus pestañas y luego únelos con suavidad.
+                                                                 ¡Un truco que siempre funciona!
+                        </li>
+                        <li>
+                            <strong>Alas de Guardiana:</strong> Para ese cat-eye perfecto, traza
+                                                                primero la línea inferior de tu ala y luego conéctala con el resto del
+                                                                delineado. ¡Mírate de frente en el espejo! Asegura la simetría, ¡y a volar!
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center">
+                <img th:src="@{/assets/img/sombras y delineado.png}" alt=""
+                     class="img-fluid imagenTips" width="500px" height="500px">
+            </div>
+            <p class="fw-bolder fst-italic text-center pt-3 pb-3">
+                Con estos secretos de Magical Alliance, tus ojos irradiarán una belleza
+                que cautivará a todos. ¡Prepárate para lanzar tu hechizo!
+            </p>
+        </div>
+    </div>
+
+    <div class="container-fluid d-flex">
+        <div class="container mt-5 mx-auto shadow" id="tipSkingCare">
+            <div class="container-fluid d-flex justify-content-center pt-4">
+                <h4 class="fw-bold ps-1">🎨 El Ritual Mágico de tu Piel: Skincare con Magical Alliance</h4>
+            </div>
+            <div class="mt-4">
+                <p class="text-center">
+                    Tu piel es el lienzo donde se manifiesta tu magia. En Magical Alliance,
+                    sabemos que una piel radiante no es un secreto, ¡es un ritual!
+                    Despierta el encanto natural de tu rostro con estos pasos esenciales,
+                    dignos de una verdadera guardiana:
+                </p>
+                <div>
+                    <ul class="pt-3 pb-3">
+                        <li>
+                            <strong class="fst-italic">🌙 Paso 1: Purificación Lunar (Limpieza)</strong>
+                            Comienza tu día y finalízalo purificando tu piel. Usa un limpiador suave
+                            para retirar impurezas y energías negativas del ambiente. Tu rostro quedará
+                            fresco, listo para absorber la magia.
+                        </li>
+                        <li>
+                            <strong class="fst-italic">💧 Paso 2: Elixir de Revitalización (Tónico/Esencia)</strong>
+                            Después de limpiar, equilibra tu piel con un tónico o esencia. Es como
+                            aplicar una poción mágica que prepara tu piel, cerrando poros y abriendo
+                            camino a la hidratación profunda.
+                        </li>
+                        <li>
+                            <strong class="fst-italic">🌟 Paso 3: Pócima de Radiación (Sérum)</strong>
+                            Aquí es donde la verdadera magia sucede. Un buen sérum es tu pócima
+                            concentrada de poder: hidrata intensamente, combate los signos del
+                            tiempo o ilumina tu rostro. ¡Elige el que resuene con tus necesidades!.
+                        </li>
+                        <li>
+                            <strong class="fst-italic">💖 Paso 4: El Escudo Protector (Hidratante)</strong>
+                            Sella toda esa bondad con tu crema hidratante. Es tu escudo mágico contra
+                            los elementos, manteniendo tu piel suave, flexible y protegida durante
+                            todo el día o mientras sueñas.
+                        </li>
+                        <li>
+                            <strong class="fst-italic">☀️ Paso 5: Bendición Solar (Protector Solar - Día)</strong>
+                            De día, ¡nunca olvides tu protección solar! Es el campo de fuerza invisible
+                            que te protege de los rayos malignos del sol, manteniendo tu piel joven
+                            y llena de vitalidad.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center">
+                <img th:src="@{/assets/img/skingcare.jpg}" alt=""
+                     class="img-fluid imagenTips" width="500px" height="500px">
+            </div>
+            <p class="fw-bolder fst-italic text-center pt-3 pb-3">
+                Con el ritual de skincare de Magical Alliance, cada día tu piel brillará
+                con su propia luz estelar. ¡Despierta su magia interior!!
+            </p>
+        </div>
+    </div>
+
+    <section>
+        <div class="card shadow" id="infoEmpresa">
+            <div class="card-body container-fluid d-flex justify-content-center">
+                <h4 class="card-title fw-bold ps-1" id="sobreNosotros">✨ Acerca de Nosotros: Magical Alliance</h4>
+            </div>
+            <article>
+                <div class="container justify-content-center mt-3">
+                    <div class="d-flex"><h6 class="fw-bold pt-1 ps-1">💖 Despierta tu Magia Interior</h6></div>
+                    <div>
+                        <p>
+                            Magical Alliance no es solo una marca; es una microempresa familiar nacida
+                            de la ambición de transformar la experiencia de la belleza. Nos impulsa la
+                            nostalgia y el deseo de revivir la alegría y el color de la infancia.
+                            Recordando los momentos viendo dibujos animados con historias cautivadoras
+                            y colores brillantes, encontramos nuestra inspiración en las icónicas
+                            guerreras mágicas de los años 90. En cada producto, buscamos canalizar esa
+                            inspiración para que no solo realces tu belleza, sino que también enciendas
+                            tu espíritu. Queremos que la emoción comience desde el primer contacto: el
+                            simple acto de recibir y abrir tu pedido debe ser un momento mágico y memorable.
+                        </p>
+                    </div>
+                </div>
+            </article>
+            <article>
+                <div class="container justify-content-center mt-3">
+                    <div class="d-flex"><h6 class="fw-bold pt-1 ps-1">🌟 Tu Portal al Universo del Anime en Chile</h6></div>
+                    <div>
+                        <p>
+                            Somos tu Alianza Mágica con la cultura pop japonesa. Además de nuestra línea
+                            exclusiva de cosméticos, vestuario y accesorios, nos enorgullece ser el mayor
+                            distribuidor en Chile de productos oficiales de cosméticos con temática anime
+                            de Japón. En nuestra tienda, no solo encontrarás nuestras creaciones únicas,
+                            sino también una selección inigualable de artículos de otras tiendas oficiales,
+                            consolidándonos como el punto de encuentro definitivo para los fans de la
+                            belleza y el anime.
+                        </p>
+                    </div>
+                </div>
+            </article>
+            <article>
+                <div class="container justify-content-center mt-3 pb-4">
+                    <div class="d-flex"><h6 class="fw-bold pt-1 ps-1">🌱 Nuestra Alianza con la Belleza Consciente y la Excelencia</h6></div>
+                    <div>
+                        <p>
+                            La magia de Magical Alliance reside en la calidad, la ética y la transparencia.
+                            Nos comprometemos con prácticas que benefician tanto a tu piel como al
+                            planeta, estableciendo un estándar de belleza consciente:
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="card shadow" id="selloEmpresa">
+            <div class="card-body container-fluid d-flex row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-4 mx-auto align-items-start">
+
+                <article class="col text-center">
+                    <div class="flex-shrink-0">
+                        <img th:src="@{/assets/img/curt.png}" class="img-fluid mx-auto d-block" style="height: 100px; width: 100px; object-fit: contain;">
+                    </div>
+                    <div class="mt-2">
+                        <h6 class="fw-bold">Cruelty-Free</h6>
+                        <p>
+                            Ningún ser vivo se ve afectado en las pruebas de nuestros productos.
+                            Utilizamos piel sintética de diversas texturas para asegurar su seguridad y reactividad.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="col text-center">
+                    <div class="flex-shrink-0">
+                        <img th:src="@{/assets/img/veg.png}" class="img-fluid mx-auto d-block" style="height: 100px; width: 100px; object-fit: contain;">
+                    </div>
+                    <div class="mt-2">
+                        <h6 class="fw-bold">Veganos</h6>
+                        <p>
+                            El 90% o más de la composición de nuestros productos es de origen vegetal.
+                            Utilizamos plantas de uso habitual, minimizando el riesgo de alergias.
+                            Recomendamos verificar los componentes si tienes una alergia específica.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="col text-center">
+                    <div class="flex-shrink-0">
+                        <img th:src="@{/assets/img/purg.png}" class="img-fluid mx-auto d-block" style="height: 100px; width: 100px; object-fit: contain;">
+                    </div>
+                    <div class="mt-2">
+                        <h6 class="fw-bold">PureGlam</h6>
+                        <p>
+                            Elevamos la belleza con productos seguros, probados y transparentes.
+                            Excluimos más de 1,900 ingredientes potencialmente inseguros y aplicamos
+                            más de 90 verificaciones de prueba. Nuestros estudios han demostrado que
+                            nuestros productos generan beneficios reales al mejorar la elasticidad,
+                            reducir la porosidad y suavizar las líneas de expresión, posicionándonos
+                            como la marca número 1 de cosméticos en Chile.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="col text-center">
+                    <div class="flex-shrink-0">
+                        <img th:src="@{/assets/img/susten.png}" class="img-fluid mx-auto d-block" style="height: 100px; width: 100px; object-fit: contain;">
+                    </div>
+                    <div class="mt-2">
+                        <h6 class="fw-bold">Sustainable Packaging</h6>
+                        <p>
+                            Nuestras cajas cuentan con certificación FSC, asegurando que los materiales
+                            provienen de fuentes forestales responsables y sostenibles.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="col text-center">
+                    <div class="flex-shrink-0">
+                        <img th:src="@{/assets/img/work.png}" class="img-fluid mx-auto d-block" style="height: 100px; width: 100px; object-fit: contain;">
+                    </div>
+                    <div class="mt-2">
+                        <h6 class="fw-bold">Ética Laboral</h6>
+                        <p>
+                            Nuestras instalaciones de fabricación poseen certificaciones internacionales
+                            (SA8000, BSCI y SMETA) que garantizan un entorno de trabajo ético y justo
+                            para todos nuestros colaboradores.
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <article>
+            <div class="card shadow d-flex justify-content-center align-content-center mt-3" id="anteFinal">
+                <div class="card-body text-center">
+                    <h5 class="card-text fw-bold">Magical Alliance</h5>
+                    <p class="card-title fw-bold text-wrap">
+                        Belleza inspirada en la fantasía, formulada con conciencia y comprometida con
+                        la excelencia. ¡Gracias por ser parte de nuestra historia!
+                    </p>
+                </div>
+            </div>
+        </article>
+    </section>
+</main>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+</body>
+</html>

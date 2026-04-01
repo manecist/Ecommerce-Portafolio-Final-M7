@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body class="bg-light">
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<div class="container py-5">
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 mb-4" style="border-radius: 25px;">
+                <div class="card-body text-center p-4">
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto mb-3"
+                         style="width: 100px; height: 100px; border: 2px solid #f480ff;">
+                        <i class="bi bi-person-bounding-box display-4 titulo-magico"></i>
+                    </div>
+                    <h4 class="fw-bold mb-0" th:text="${u.cliente.nombre + ' ' + u.cliente.apellido}">Nombre del Habitante</h4>
+                    <span class="badge rounded-pill bg-dark px-3 mb-3"
+                          th:text="${u.rol.nombre == 'ROLE_ADMIN' ? '🌙 Supremo Admin' : '🌸 Guardian(a)'}">Rango</span>
+
+                    <hr class="opacity-10">
+
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-envelope-paper me-2"></i><span th:text="${u.email}"></span>
+                    </p>
+
+                    <div class="d-flex justify-content-around bg-light p-3" style="border-radius: 15px;">
+                        <div class="text-center">
+                            <p class="text-muted small mb-0 fw-bold">Registro</p>
+                            <span class="small" th:text="${#temporals.format(u.fechaRegistro, 'dd/MM/yyyy')}">01/01/2024</span>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-muted small mb-0 fw-bold">Edad</p>
+                            <span class="small"
+                                  th:text="${u.cliente.getEdad}">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0" style="border-radius: 25px;">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h6 class="fw-bold titulo-magico mb-0"><i class="bi bi-shield-lock me-2"></i>Credenciales Sagradas</h6>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/usuarios/editar-acceso/{id}(id=${u.id})}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Portal de Correo</label>
+                            <input type="email" name="email" th:value="${u.email}" class="form-control input-magico-sm" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">Nueva Contraseña (Opcional)</label>
+                            <input type="password" name="password" class="form-control input-magico-sm" placeholder="********">
+                        </div>
+                        <button type="submit" class="btn btn-guardar-magico px-4 rounded-pill shadow-sm">Actualizar Portal</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Suscripción al Boletín -->
+            <div class="card shadow-sm border-0 mt-4" style="border-radius: 25px;">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h6 class="fw-bold titulo-magico mb-0"><i class="bi bi-envelope-heart me-2"></i>Boletín Mágico</h6>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <div th:if="${esSuscriptor}">
+                        <span class="badge rounded-pill px-3 py-2 mb-3" style="background: linear-gradient(135deg,#6907ab,#f480ff); font-size: 0.8rem;">
+                            <i class="bi bi-check2-circle me-1"></i> Suscripción activa
+                        </span>
+                        <p class="text-muted small mb-3">Recibes nuestras novedades y promociones exclusivas por correo.</p>
+                        <form th:action="@{/usuarios/suscripcion/toggle/{id}(id=${u.id})}" method="post">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm rounded-pill px-4">
+                                <i class="bi bi-bell-slash me-1"></i> Darme de baja
+                            </button>
+                        </form>
+                    </div>
+                    <div th:unless="${esSuscriptor}">
+                        <span class="badge rounded-pill bg-secondary px-3 py-2 mb-3" style="font-size: 0.8rem;">
+                            <i class="bi bi-bell-slash me-1"></i> Sin suscripción
+                        </span>
+                        <p class="text-muted small mb-3">Activa el boletín para recibir ofertas y novedades mágicas.</p>
+                        <form th:action="@{/usuarios/suscripcion/toggle/{id}(id=${u.id})}" method="post">
+                            <button type="submit" class="btn btn-sm rounded-pill px-4" style="background: linear-gradient(135deg,#6907ab,#f480ff); color:#fff; border:none;">
+                                <i class="bi bi-bell me-1"></i> Activar suscripción
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+
+            <div th:if="${success}" class="alert alert-success border-0 shadow-sm rounded-4 mb-4" role="alert">
+                <i class="bi bi-check2-all me-2"></i> <span th:text="${success}"></span>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4" style="border-radius: 25px;">
+                <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold titulo-magico mb-0"><i class="bi bi-stars me-2"></i>Esencia del Habitante</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/usuarios/editar-datos/{id}(id=${u.id})}" th:object="${cliente}" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Nombre</label>
+                                <input type="text" th:field="*{nombre}" class="form-control input-magico-sm" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Apellido</label>
+                                <input type="text" th:field="*{apellido}" class="form-control input-magico-sm" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Teléfono de Contacto</label>
+                                <input type="tel" th:field="*{telefono}" class="form-control input-magico-sm">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Fecha de Nacimiento</label>
+                                <input type="date" th:field="*{fechaNacimiento}" class="form-control input-magico-sm">
+                            </div>
+                            <!-- RUT -->
+                            <div class="col-md-6" sec:authorize="hasRole('ROLE_ADMIN')">
+                                <label class="form-label small fw-bold text-muted">Identidad (RUT)</label>
+                                <input type="text" th:field="*{rut}" class="form-control input-magico-sm rut-input">
+                            </div>
+                            <div class="col-md-6" sec:authorize="!hasRole('ROLE_ADMIN')">
+                                <label class="form-label small fw-bold text-muted">Identidad (RUT)</label>
+                                <input type="hidden" th:field="*{rut}">
+                                <input type="text"
+                                       th:with="r=*{rut}"
+                                       th:value="${r != null && r.length() > 1 ? #numbers.formatInteger(#strings.substring(r,0,r.length()-1),0,'POINT') + '-' + #strings.substring(r,r.length()-1) : r}"
+                                       class="form-control bg-light border-0" readonly style="border-radius: 12px;">
+                            </div>
+                            <!-- Email -->
+                            <div class="col-md-6" sec:authorize="hasRole('ROLE_ADMIN')">
+                                <label class="form-label small fw-bold text-muted">Email</label>
+                                <input type="email" th:field="*{email}" class="form-control input-magico-sm">
+                            </div>
+                            <div class="col-md-6" sec:authorize="!hasRole('ROLE_ADMIN')">
+                                <label class="form-label small fw-bold text-muted">Email</label>
+                                <input type="email" th:field="*{email}" class="form-control bg-light border-0" readonly style="border-radius: 12px;">
+                            </div>
+                            <div class="col-12 text-end mt-4">
+                                <button type="submit" class="btn btn-guardar-magico px-4 rounded-pill shadow-sm">Sincronizar Esencia</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Zona de Peligro: Eliminar Cuenta -->
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 25px; border: 1px solid #f8d7da !important;">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0" style="color:#dc3545;"><i class="bi bi-exclamation-triangle-fill me-2"></i>Zona de Peligro</h5>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted small mb-3">
+                        La eliminación de tu cuenta es permanente e irreversible. Se borrarán todos tus datos y recibirás un correo de confirmación.
+                    </p>
+                    <button type="button" class="btn btn-outline-danger btn-sm rounded-pill px-4"
+                            data-bs-toggle="modal" data-bs-target="#modalEliminarCuenta">
+                        <i class="bi bi-person-dash me-1"></i> Eliminar mi cuenta
+                    </button>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0" style="border-radius: 25px;">
+                <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold titulo-magico mb-0"><i class="bi bi-geo-alt-fill me-2"></i>Moradas Registradas</h5>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalNuevaDir">
+                        <i class="bi bi-plus-lg me-1"></i> Nueva Morada
+                    </button>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6" th:each="dir : ${u.cliente.direcciones}">
+                            <div class="card h-100 border-0 shadow-sm p-3"
+                                 th:style="${dir.esPrincipal ? 'border-left: 5px solid #00d4aa !important; border-radius: 20px;' : 'border-radius: 20px; border: 1px solid #eee;'}">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span th:if="${dir.esPrincipal}" class="badge bg-success small" style="font-size: 0.65rem;">PRINCIPAL</span>
+                                    <div class="dropdown ms-auto">
+                                        <button class="btn btn-link text-muted p-0" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg" style="border-radius: 15px;">
+                                            <li th:if="${!dir.esPrincipal}">
+                                                <form th:action="@{/usuarios/direcciones/principal/{uId}/{dId}(uId=${u.id}, dId=${dir.id})}" method="post">
+                                                    <button type="submit" class="dropdown-item small">Marcar como Principal</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item small text-danger"
+                                                        th:data-action="@{/usuarios/direcciones/eliminar/{uId}/{dId}(uId=${u.id}, dId=${dir.id})}"
+                                                        onclick="abrirConfirmarEliminarDir(this)">
+                                                    <i class="bi bi-trash3 me-2"></i>Eliminar Morada
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <h6 class="fw-bold mb-1" th:text="${dir.direccion}">Calle 123</h6>
+                                <p class="text-muted small mb-0" th:text="${dir.ciudad + ', ' + dir.estadoRegion}"></p>
+                                <p class="text-muted small" th:text="${dir.pais}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNuevaDir" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 30px;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="fw-bold titulo-magico"><i class="bi bi-house-add me-2"></i>Añadir Nueva Morada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/usuarios/direcciones/agregar/{id}(id=${u.id})}" method="post">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <input type="text" name="direccion" class="form-control input-magico-sm" placeholder="Calle y número" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="ciudad" class="form-control input-magico-sm" placeholder="Ciudad" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="estadoRegion" class="form-control input-magico-sm" placeholder="Región/Estado" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="pais" class="form-control input-magico-sm" placeholder="Región/Estado" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="codigoPostal" class="form-control input-magico-sm" placeholder="Código Postal">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pb-4 px-4 justify-content-center">
+                    <button type="submit" class="btn btn-guardar-magico px-5 rounded-pill shadow">Registrar Morada</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Confirmar Eliminar Morada -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+            <div class="modal-header bg-dark text-white border-0 justify-content-center pt-4">
+                <h5 class="modal-title fw-bold">⚠️ ¿Desvanecer esta Morada?</h5>
+            </div>
+            <div class="modal-body text-center p-4">
+                <p class="text-muted small">Estás a punto de eliminar esta dirección de forma permanente.</p>
+                <div class="alert alert-warning py-2 mb-0 small text-start border-0 rounded-4">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Esta acción es irreversible.
+                </div>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pb-4 gap-3">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Conservar</button>
+                <form id="formEliminarDir" method="post" action="#">
+                    <button type="submit" class="btn btn-eliminar-magico px-4 shadow">Sí, Desvanecer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Confirmar Eliminación de Cuenta -->
+<div class="modal fade" id="modalEliminarCuenta" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+            <div class="modal-header border-0 pt-4 px-4 justify-content-center" style="background-color:#fff3f3;">
+                <h5 class="modal-title fw-bold" style="color:#dc3545;">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>¿Eliminar tu cuenta?
+                </h5>
+            </div>
+            <div class="modal-body text-center p-4">
+                <p class="text-muted small mb-2">Esta acción es <strong>permanente e irreversible</strong>.</p>
+                <p class="text-muted small mb-3">Se eliminarán todos tus datos y recibirás un correo de confirmación.</p>
+                <div class="alert alert-warning py-2 mb-0 small text-start border-0 rounded-4">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Tu historial de pedidos y direcciones también se eliminará.
+                </div>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pb-4 gap-3">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-1"></i> Cancelar
+                </button>
+                <form th:action="@{/usuarios/eliminar-cuenta/{id}(id=${u.id})}" method="post">
+                    <button type="submit" class="btn btn-danger rounded-pill px-4">
+                        <i class="bi bi-person-x me-1"></i> Sí, eliminar mi cuenta
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+</body>
+</html>

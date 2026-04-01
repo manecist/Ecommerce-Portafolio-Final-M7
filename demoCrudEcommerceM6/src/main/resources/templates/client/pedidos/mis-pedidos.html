@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<main class="container mt-5 mb-5">
+
+    <div class="text-center mb-5">
+        <h1 class="fw-bolder display-5">🛍️ Mis Pedidos</h1>
+        <p class="text-muted">Historial completo de tus compras mágicas</p>
+    </div>
+
+    <!-- Sin pedidos -->
+    <div th:if="${#lists.isEmpty(pedidos)}" class="text-center py-5 carrito-vacio-box">
+        <i class="bi bi-bag-x display-1 text-muted mb-3"></i>
+        <h5 class="fw-bold text-muted">Aún no has realizado pedidos</h5>
+        <a th:href="@{/productos}" class="btn btn-magico px-5 py-2 mt-3 rounded-pill fw-bold">
+            ✨ Explorar el Catálogo
+        </a>
+    </div>
+
+    <!-- Lista de pedidos -->
+    <div th:unless="${#lists.isEmpty(pedidos)}">
+        <div class="card border-0 shadow-sm pedidos-list-card mb-3 p-3 p-md-4"
+             th:each="pedido : ${pedidos}">
+            <div class="row align-items-center g-3">
+
+                <!-- ID y fecha -->
+                <div class="col-md-2 text-center">
+                    <p class="text-muted small mb-0">Pedido</p>
+                    <p class="fw-bolder fs-5 mb-0 precio-magico" th:text="'#' + ${pedido.id}"></p>
+                    <p class="text-muted small mb-0"
+                       th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}"></p>
+                </div>
+
+                <!-- Items resumen -->
+                <div class="col-md-4">
+                    <p class="fw-bold mb-1 small text-muted">Productos:</p>
+                    <p class="mb-0 small" th:each="item, stat : ${pedido.items}"
+                       th:if="${stat.index < 2}"
+                       th:text="${item.nombreProducto + ' x' + item.cantidad}"></p>
+                    <p class="text-muted small mb-0" th:if="${pedido.items.size() > 2}"
+                       th:text="'+ ' + ${pedido.items.size() - 2} + ' más...'"></p>
+                </div>
+
+                <!-- Total -->
+                <div class="col-md-2 text-center">
+                    <p class="text-muted small mb-0">Total</p>
+                    <p class="fw-bold precio-magico mb-0"
+                       th:text="'$ ' + ${#numbers.formatInteger(pedido.total, 0, 'POINT')}"></p>
+                </div>
+
+                <!-- Estado -->
+                <div class="col-md-2 text-center">
+                    <span class="badge estado-pedido-badge"
+                          th:classappend="${pedido.estado.name()}"
+                          th:text="${pedido.estado}">
+                    </span>
+                </div>
+
+                <!-- Acción -->
+                <div class="col-md-2 text-center d-flex flex-column gap-1 align-items-center">
+                    <a th:href="@{'/mis-pedidos/' + ${pedido.id}}"
+                       class="btn btn-turquesa-magico btn-sm rounded-pill px-3">
+                        <i class="bi bi-eye me-1"></i> Ver
+                    </a>
+                    <!-- Cancelar: solo si no está enviado/entregado/cancelado/devuelto -->
+                    <form th:if="${pedido.estado.name() == 'PENDIENTE' or pedido.estado.name() == 'CONFIRMADO' or pedido.estado.name() == 'EN_PREPARACION'}"
+                          th:action="@{'/mis-pedidos/' + ${pedido.id} + '/cancelar'}" method="post">
+                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3"
+                                onclick="return confirm('¿Confirmas la cancelación del pedido?')">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar
+                        </button>
+                    </form>
+                    <!-- Devolución: solo si ya fue enviado -->
+                    <form th:if="${pedido.estado.name() == 'ENVIADO'}"
+                          th:action="@{'/mis-pedidos/' + ${pedido.id} + '/devolucion'}" method="post">
+                        <button type="submit" class="btn btn-outline-warning btn-sm rounded-pill px-3"
+                                onclick="return confirm('¿Solicitar devolución de este pedido?')">
+                            <i class="bi bi-arrow-return-left me-1"></i> Devolución
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+</body>
+</html>

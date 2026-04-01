@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public/layout/header :: head}">
+    <title>Contacto - Magical Alliance</title>
+</head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <!-- Encabezado de la sección -->
+            <div class="text-center mb-4">
+                <h2 class="fw-bold titulo-magico">Contacta con la Alianza</h2>
+                <p class="text-muted">¿Tienes preguntas, sugerencias o simplemente quieres saludar? Escríbenos y te responderemos pronto.</p>
+            </div>
+
+            <!-- Alerta de éxito -->
+            <div th:if="${exito}" class="alert alert-magica bg-white border-0 shadow-sm mb-4 text-center" role="alert">
+                <i class="bi bi-check-circle-fill me-2" style="color: #00d4aa;"></i>
+                <span th:text="${exito}"></span>
+            </div>
+
+            <!-- Alerta de error -->
+            <div th:if="${error}" class="alert alert-danger bg-white border-0 shadow-sm mb-4 text-center small" role="alert"
+                 style="color: #ff4da6; border-left: 4px solid #f480ff !important;">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- Formulario de contacto -->
+            <div class="card card-login shadow-lg border-0">
+                <div class="card-body p-4">
+
+                    <form th:action="@{/contacto}" th:object="${contacto}" method="post" class="needs-validation" novalidate>
+
+                        <!-- Nombre -->
+                        <div class="form-floating mb-3">
+                            <input type="text"
+                                   th:field="*{nombre}"
+                                   th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
+                                   class="form-control input-magico"
+                                   id="nombre"
+                                   placeholder="Tu nombre"
+                                   required>
+                            <label for="nombre" class="label-magico">
+                                <i class="bi bi-person me-1"></i>Nombre
+                            </label>
+                            <div class="invalid-feedback text-start" th:if="${#fields.hasErrors('nombre')}"
+                                 th:errors="*{nombre}">
+                                El nombre es obligatorio.
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-floating mb-3">
+                            <input type="email"
+                                   th:field="*{email}"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                                   class="form-control input-magico"
+                                   id="email"
+                                   placeholder="tu@correo.com"
+                                   required>
+                            <label for="email" class="label-magico">
+                                <i class="bi bi-envelope me-1"></i>Correo Electrónico
+                            </label>
+                            <div class="invalid-feedback text-start" th:if="${#fields.hasErrors('email')}"
+                                 th:errors="*{email}">
+                                Ingresa un correo válido.
+                            </div>
+                        </div>
+
+                        <!-- Mensaje -->
+                        <div class="mb-3">
+                            <div class="form-floating">
+                                <textarea th:field="*{mensaje}"
+                                          th:classappend="${#fields.hasErrors('mensaje')} ? 'is-invalid' : ''"
+                                          class="form-control input-magico"
+                                          id="mensaje"
+                                          placeholder="Escribe tu mensaje aquí..."
+                                          style="height: 150px;"
+                                          required></textarea>
+                                <label for="mensaje" class="label-magico">
+                                    <i class="bi bi-chat-dots me-1"></i>Mensaje
+                                </label>
+                                <div class="invalid-feedback text-start" th:if="${#fields.hasErrors('mensaje')}"
+                                     th:errors="*{mensaje}">
+                                    El mensaje es obligatorio.
+                                </div>
+                            </div>
+                            <div class="text-end mt-1">
+                                <small class="text-muted" id="contadorMensaje">0 / 1000 caracteres</small>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a th:href="@{/home}" class="btn btn-link text-decoration-none text-muted">
+                                <i class="bi bi-arrow-left me-1"></i>Volver al inicio
+                            </a>
+                            <button type="submit" class="btn btn-magico-login px-5 py-2 fw-bold shadow-sm">
+                                <i class="bi bi-send me-2"></i>Enviar Mensaje
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <!-- Información adicional de contacto -->
+            <div class="row mt-5 text-center g-3">
+                <div class="col-12 col-md-4">
+                    <div class="p-3">
+                        <i class="bi bi-envelope-heart display-6" style="color: #f480ff;"></i>
+                        <p class="mt-2 small text-muted">info@magicalalliance.com</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-3">
+                        <i class="bi bi-telephone display-6" style="color: #f480ff;"></i>
+                        <p class="mt-2 small text-muted">+56 9 1234 5678</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-3">
+                        <i class="bi bi-clock display-6" style="color: #f480ff;"></i>
+                        <p class="mt-2 small text-muted">Lun - Vie: 9:00 - 18:00</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+
+
+</body>
+</html>
