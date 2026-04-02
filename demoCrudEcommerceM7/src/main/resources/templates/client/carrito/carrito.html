@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<main class="container mt-5 mb-5">
+
+    <!-- Título -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bolder display-5">🛒 Tu Caldero Mágico</h1>
+        <p class="text-muted">Revisa tus tesoros antes de continuar</p>
+    </div>
+
+    <!-- Mensajes flash -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 15px;">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" style="border-radius: 15px;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Carrito vacío -->
+    <div th:if="${carrito.items.isEmpty()}" class="text-center py-5 carrito-vacio-box">
+        <i class="bi bi-bag-x display-1 text-muted mb-3"></i>
+        <h4 class="fw-bold text-muted">Tu caldero está vacío</h4>
+        <p class="text-muted">¡Agrega tesoros mágicos para comenzar tu aventura!</p>
+        <a th:href="@{/productos}" class="btn btn-magico px-5 py-2 mt-2 rounded-pill fw-bold">
+            ✨ Explorar el Catálogo
+        </a>
+    </div>
+
+    <!-- Contenido del carrito -->
+    <div th:unless="${carrito.items.isEmpty()}" class="row g-4">
+
+        <!-- Tabla de ítems -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm carrito-card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="carrito-thead">
+                                <tr>
+                                    <th class="ps-4">Producto</th>
+                                    <th class="text-center">Precio</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-center">Subtotal</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${carrito.items}">
+                                    <!-- Imagen + nombre -->
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img th:src="${item.producto.imagen != null and !#strings.contains(item.producto.imagen, '/')} ? @{'/productos/' + ${item.producto.imagen}} : @{'/assets/img/' + ${item.producto.imagen}}"
+                                                 th:alt="${item.producto.nombre}"
+                                                 class="carrito-img-producto rounded">
+                                            <div>
+                                                <p class="fw-bold mb-0" th:text="${item.producto.nombre}"></p>
+                                                <small class="text-muted" th:text="${item.producto.subcategoria.nombre}"></small>
+                                                <!-- Badge de descuento aplicado -->
+                                                <span th:if="${item.tieneDescuento()}"
+                                                      class="badge rounded-pill ms-1"
+                                                      style="background:#d9aaff;color:#6907ab;font-size:0.7rem;">
+                                                    <i class="bi bi-tag-fill me-1"></i>Descuento
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- Precio unitario (con tachado si hay descuento) -->
+                                    <td class="text-center">
+                                        <!-- Con descuento: mostrar original tachado + precio nuevo -->
+                                        <div th:if="${item.tieneDescuento()}">
+                                            <small class="text-decoration-line-through text-muted d-block"
+                                                   th:text="'$ ' + ${#numbers.formatInteger(item.precioOriginal, 0, 'POINT')}"></small>
+                                            <span class="fw-bold precio-magico"
+                                                  th:text="'$ ' + ${#numbers.formatInteger(item.precioUnitario, 0, 'POINT')}"></span>
+                                        </div>
+                                        <!-- Sin descuento -->
+                                        <span th:unless="${item.tieneDescuento()}"
+                                              class="fw-bold precio-magico"
+                                              th:text="'$ ' + ${#numbers.formatInteger(item.precioUnitario, 0, 'POINT')}"></span>
+                                    </td>
+
+                                    <!-- Control de cantidad (AJAX) -->
+                                    <td class="text-center">
+                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                            <button class="btn btn-cantidad-magic btn-sm"
+                                                    th:onclick="'cambiarCantidad(' + ${item.id} + ', ' + ${item.cantidad - 1} + ')'">
+                                                <i class="bi bi-dash-lg"></i>
+                                            </button>
+                                            <span class="fw-bold px-2 cantidad-display" th:id="'cant-' + ${item.id}"
+                                                  th:text="${item.cantidad}">1</span>
+                                            <button class="btn btn-cantidad-magic btn-sm"
+                                                    th:onclick="'cambiarCantidad(' + ${item.id} + ', ' + ${item.cantidad + 1} + ')'">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                    <!-- Subtotal -->
+                                    <td class="text-center fw-bold precio-magico"
+                                        th:id="'sub-' + ${item.id}"
+                                        th:text="'$ ' + ${#numbers.formatInteger(item.subtotal, 0, 'POINT')}">
+                                    </td>
+
+                                    <!-- Eliminar -->
+                                    <td class="text-center">
+                                        <form th:action="@{'/carrito/eliminar/' + ${item.id}}" method="post">
+                                            <button type="submit" class="btn btn-eliminar-item-magic btn-sm rounded-pill"
+                                                    title="Eliminar del carrito">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ahorro por descuentos automáticos -->
+            <div th:if="${carrito.ahorroProductos > 0}"
+                 class="alert mt-3 py-2 px-3 d-flex align-items-center gap-2"
+                 style="border-radius:15px; background:rgba(0,212,170,0.12); border:1px solid #00d4aa;">
+                <i class="bi bi-stars" style="color:#00d4aa; font-size:1.2rem;"></i>
+                <span class="small">
+                    <strong>¡Estás ahorrando
+                    <span th:text="'$ ' + ${#numbers.formatInteger(carrito.ahorroProductos, 0, 'POINT')}"></span>
+                    </strong> con descuentos automáticos en tus productos.
+                </span>
+            </div>
+
+            <!-- Acciones del carrito -->
+            <div class="d-flex justify-content-between mt-3">
+                <a th:href="@{/productos}" class="btn btn-limpiar-magic rounded-pill px-4">
+                    <i class="bi bi-arrow-left me-1"></i> Seguir comprando
+                </a>
+                <form th:action="@{/carrito/vaciar}" method="post">
+                    <button type="submit" class="btn btn-outline-secondary rounded-pill px-4"
+                            onclick="return confirm('¿Vaciar todo el carrito?')">
+                        <i class="bi bi-trash3 me-1"></i> Vaciar carrito
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Resumen del pedido -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm carrito-resumen-card">
+                <div class="card-header carrito-resumen-header text-white text-center fw-bold fs-5">
+                    ✨ Resumen del Pedido
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Subtotal sin descuentos de ítems -->
+                    <div th:if="${carrito.ahorroProductos > 0}" class="d-flex justify-content-between mb-1">
+                        <span class="text-muted small">Precio original</span>
+                        <span class="text-muted small text-decoration-line-through"
+                              th:text="'$ ' + ${#numbers.formatInteger(carrito.total + carrito.ahorroProductos, 0, 'POINT')}"></span>
+                    </div>
+
+                    <!-- Ahorro productos -->
+                    <div th:if="${carrito.ahorroProductos > 0}" class="d-flex justify-content-between mb-1">
+                        <span class="small" style="color:#00d4aa;"><i class="bi bi-tag-fill me-1"></i>Descuentos</span>
+                        <span class="small fw-bold" style="color:#00d4aa;"
+                              th:text="'- $ ' + ${#numbers.formatInteger(carrito.ahorroProductos, 0, 'POINT')}"></span>
+                    </div>
+
+                    <!-- Neto ítems -->
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Neto (<span th:text="${carrito.totalItems}"></span> uds.)</span>
+                        <span class="fw-bold"
+                              th:text="'$ ' + ${#numbers.formatInteger(carrito.total, 0, 'POINT')}"></span>
+                    </div>
+
+                    <!-- Cupón aplicado -->
+                    <div th:if="${carrito.cuponAplicado != null}"
+                         class="d-flex justify-content-between align-items-center mb-2 py-2 px-3"
+                         style="background:rgba(105,7,171,0.07); border-radius:10px;">
+                        <div>
+                            <i class="bi bi-ticket-perforated-fill me-1" style="color:#6907ab;"></i>
+                            <code class="fw-bold small" style="color:#6907ab;" th:text="${carrito.cuponAplicado}"></code>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold small" style="color:#6907ab;"
+                                  th:text="'- $ ' + ${#numbers.formatInteger(carrito.montoDescuentoCupon, 0, 'POINT')}"></span>
+                            <form th:action="@{/carrito/quitar-cupon}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm p-0 border-0 text-muted" title="Quitar cupón">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- IVA -->
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">IVA (19%)</span>
+                        <span class="fw-bold"
+                              th:text="'$ ' + ${#numbers.formatInteger(carrito.totalConCupon * 0.19, 0, 'POINT')}"></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Envío</span>
+                        <span class="text-success fw-bold">Por coordinar</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fs-5 fw-bold mb-3">
+                        <span>Total</span>
+                        <span class="precio-magico"
+                              th:text="'$ ' + ${#numbers.formatInteger(carrito.totalConCupon * 1.19, 0, 'POINT')}"></span>
+                    </div>
+
+                    <!-- Formulario de cupón -->
+                    <div th:unless="${carrito.cuponAplicado != null}" class="mb-3">
+                        <p class="small fw-bold text-muted mb-2">¿Tienes un código de descuento?</p>
+                        <form th:action="@{/carrito/aplicar-cupon}" method="post">
+                            <div class="input-group">
+                                <input type="text" name="codigo" class="form-control"
+                                       placeholder="Ej: MAGIC20" required
+                                       style="border-radius: 12px 0 0 12px; font-family: monospace; letter-spacing:1px; text-transform:uppercase;">
+                                <button type="submit" class="btn btn-turquesa-magico fw-bold"
+                                        style="border-radius: 0 12px 12px 0;">
+                                    Aplicar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <a th:href="@{/carrito/checkout}" class="btn btn-magico w-100 py-3 fw-bold rounded-pill shadow-sm">
+                        Proceder al Checkout <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+
+<script>
+function cambiarCantidad(itemId, nuevaCantidad) {
+    fetch('/carrito/actualizar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'itemId=' + itemId + '&cantidad=' + nuevaCantidad
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            if (nuevaCantidad <= 0) {
+                window.location.reload();
+            } else {
+                const numerito = document.getElementById('numerito');
+                if (numerito && data.totalItems !== undefined) numerito.innerText = data.totalItems;
+                window.location.reload();
+            }
+        } else {
+            alert('⚠️ ' + (data.mensaje || 'No se pudo actualizar la cantidad'));
+        }
+    })
+    .catch(() => alert('⚠️ Error de conexión'));
+}
+</script>
+</body>
+</html>
