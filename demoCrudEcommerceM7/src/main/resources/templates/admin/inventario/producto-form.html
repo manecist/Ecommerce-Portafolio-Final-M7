@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card  shadow-lg rounded-4">
+                <div class="card-header gestionheader py-3 rounded-top-4">
+                    <h5 class="mb-0 text-center fw-bold"
+                        th:text="${producto.id != null and producto.id != 0} ? '✨ Modificar Artículo Mágico' : '💎 Registrar Nuevo Tesoro'">
+                    </h5>
+                </div>
+
+                <div class="card-body p-4">
+                    <div th:if="${error != null}"
+                         class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm border-0 animate__animated animate__shakeX"
+                         style="border-radius: 15px; border-left: 5px solid #dc3545 !important;">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-octagon-fill fs-4 me-3"></i>
+                            <div>
+                                <strong>¡Hechizo interrumpido!</strong><br>
+                                <span class="small" th:text="${error}"></span>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <form id="formProducto" th:action="@{/productos/admin/guardar}" th:object="${producto}" method="post"
+                          enctype="multipart/form-data" class="needs-validation" novalidate>
+
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" name="imagenActual" th:value="*{imagen}">
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-bold"><i class="bi bi-magic me-1"></i> NOMBRE DEL PRODUCTO</label>
+                                <input type="text" th:field="*{nombre}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''" required>
+                                <div class="invalid-feedback">Por favor, bautiza tu tesoro con un nombre.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold"><i class="bi bi-coin me-1"></i> PRECIO (CLP)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" th:field="*{precio}" class="form-control"
+                                           th:classappend="${#fields.hasErrors('precio')} ? 'is-invalid' : ''"
+                                           id="inputPrecioProducto"
+                                           step="1" min="0" onfocus="this.select()" required>
+                                    <div class="invalid-feedback">El precio no debe ser menor a 0.</div>
+                                </div>
+                                <div id="avisoPrecionBajo" class="text-warning small mt-1 fw-bold" style="display:none;">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>Precio muy bajo — ¿es correcto?
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold"><i class="bi bi-box-seam me-1"></i> STOCK</label>
+                                <input type="number" th:field="*{stock}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('stock')} ? 'is-invalid' : ''"
+                                       step="1" min="0" onfocus="this.select()" required>
+                                <div class="invalid-feedback">No puedes tener stock negativo.</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold"><i class="bi bi-tags me-1"></i> SUBCATEGORÍA</label>
+                                <select name="subcategoriaId" class="form-select" required>
+                                    <option value="">Selecciona...</option>
+                                    <option th:each="sub : ${subcategorias}"
+                                            th:value="${sub.id}"
+                                            th:selected="${producto.subcategoria != null and producto.subcategoria.id == sub.id}"
+                                            th:text="${sub.categoria.nombre + ' ➔ ' + sub.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold"><i class="bi bi-image me-1"></i> IMAGEN</label>
+                                <ul class="nav nav-pills nav-fill mb-2" id="imgTab" role="tablist">
+                                    <li class="nav-item">
+                                        <button class="nav-link active btn-sm fw-bold" data-bs-toggle="tab" data-bs-target="#galeria" type="button">📜 Galería</button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link btn-sm fw-bold" data-bs-toggle="tab" data-bs-target="#subir" type="button">☁️ Subir Nueva</button>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content border p-3 bg-white" style="border-radius: 15px;">
+                                    <div class="tab-pane fade show active" id="galeria">
+                                        <select name="imagenExistente" class="form-select" id="selectGaleria">
+                                            <option value="">--- Selecciona de la galería ---</option>
+                                            <option th:each="img : ${galeriaImagenes}"
+                                                    th:value="${img}"
+                                                    th:selected="${producto.imagen == img}"
+                                                    th:text="${img}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="tab-pane fade" id="subir">
+                                        <input type="file" name="archivoImagen" id="inputArchivo" class="form-control" accept="image/*">
+                                    </div>
+                                </div>
+
+                                <div class="preview-container text-center mt-3 p-2 border rounded bg-light">
+                                    <p class="small text-muted mb-1">Vista Previa:</p>
+                                    <img id="preview"
+                                         th:src="${producto.imagen != null and !#strings.contains(producto.imagen, '/')} ? @{'/productos/' + ${producto.imagen}} : @{'/assets/img/' + ${producto.imagen != null ? producto.imagen : 'default.jpg'}}"
+                                         alt="Preview" style="width: 150px; height: 150px; object-fit: cover; border-radius: 15px;">
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold label-magico">
+                                    <i class="bi bi-chat-left-text me-1"></i> DESCRIPCIÓN
+                                </label>
+                                <textarea th:field="*{descripcion}" class="form-control input-magico-foco"
+                                          rows="3" placeholder="Escribe la descripción del tesoro..."
+                                          required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="button" onclick="validarYConfirmar()" class="btn btn-magico py-2 fw-bold shadow-sm">
+                                <span th:text="${producto.id != null and producto.id != 0} ? '💾 Actualizar Tesoro' : '🚀 Registrar Nuevo'"></span>
+                            </button>
+                            <a th:href="@{/productos}" class="btn btn-link text-muted text-decoration-none">❌ Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirmación guardar producto -->
+<div class="modal fade modal-magic-std" id="modalConfirmarProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="bi bi-check2-circle me-2"></i>¿Confirmar Cambios?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-bag-heart display-3 mb-3" style="color:#6907ab;"></i>
+                <p class="fs-5 mb-0">¿Estás segura de guardar este artículo en el grimorio mágico?</p>
+            </div>
+            <div class="modal-footer justify-content-center gap-3">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                    <i class="bi bi-arrow-left me-1"></i>Revisar
+                </button>
+                <button type="button" onclick="enviarFormulario()" class="btn btn-magico px-4 fw-bold rounded-pill">
+                    <i class="bi bi-check2 me-1"></i>¡Sí, Guardar!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal advertencia precio bajo -->
+<div class="modal fade modal-magic-warn" id="modalPrecioBajo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="bi bi-exclamation-triangle me-2"></i>¿Precio Inusual?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-currency-dollar display-3 mb-3" style="color:#f480ff;"></i>
+                <p class="fs-5 mb-1">El precio ingresado es <strong id="textoPrecioAviso">$0</strong></p>
+                <p class="text-muted">Es inferior a $5.000 CLP. ¿Es intencional o podría ser un error de ingreso?</p>
+            </div>
+            <div class="modal-footer justify-content-center gap-3">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                    <i class="bi bi-pencil me-1"></i>Corregir precio
+                </button>
+                <button type="button" onclick="confirmarPrecioYGuardar()" class="btn btn-magico px-4 fw-bold rounded-pill">
+                    <i class="bi bi-check2 me-1"></i>Sí, es correcto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+
+
+</body>
+</html>

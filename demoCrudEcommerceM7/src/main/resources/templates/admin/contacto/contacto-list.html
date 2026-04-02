@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<main class="container mt-5 mb-5">
+
+    <div class="text-center mb-4">
+        <h1 class="fw-bolder display-5">📩 Mensajes de Contacto</h1>
+        <p class="text-muted">Mensajes recibidos desde el panel de contacto</p>
+    </div>
+
+    <!-- Mensajes flash -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show shadow-sm mb-4" style="border-radius: 15px;">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" style="border-radius: 15px;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Contador -->
+    <div class="mb-3 text-end">
+        <span class="text-muted small" th:text="${totalElementos} + ' mensaje(s) recibido(s)'"></span>
+    </div>
+
+    <!-- Sin mensajes -->
+    <div th:if="${#lists.isEmpty(mensajes)}" class="text-center py-5 carrito-vacio-box">
+        <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+        <p class="fw-bold text-muted">No hay mensajes de contacto aún</p>
+    </div>
+
+    <!-- Lista de mensajes -->
+    <div th:unless="${#lists.isEmpty(mensajes)}">
+        <div th:each="msg : ${mensajes}" class="card border-0 shadow-sm mb-3 pedidos-list-card">
+            <div class="card-body p-4">
+                <div class="row align-items-start g-3">
+
+                    <!-- Datos del remitente -->
+                    <div class="col-md-3">
+                        <p class="text-muted small mb-1">Nombre</p>
+                        <p class="fw-bold mb-0" th:text="${msg.nombre}"></p>
+                        <p class="text-muted small mb-0" th:text="${msg.email}"></p>
+                        <p class="text-muted small mb-0"
+                           th:text="${#temporals.format(msg.fechaEnvio, 'dd/MM/yyyy HH:mm')}"></p>
+                    </div>
+
+                    <!-- Mensaje -->
+                    <div class="col-md-7">
+                        <p class="text-muted small mb-1">Mensaje</p>
+                        <p class="mb-0" th:text="${msg.mensaje}"
+                           style="line-height: 1.6; white-space: pre-wrap;"></p>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="col-md-2 text-center d-flex flex-column gap-2 justify-content-center">
+                        <a th:href="'mailto:' + ${msg.email}" class="btn btn-turquesa-magico btn-sm rounded-pill">
+                            <i class="bi bi-reply me-1"></i> Responder
+                        </a>
+                        <form th:action="@{'/admin/contacto/' + ${msg.id} + '/eliminar'}" method="post">
+                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill w-100"
+                                    onclick="return confirm('¿Eliminar este mensaje?')">
+                                <i class="bi bi-trash3 me-1"></i> Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:unless="${#lists.isEmpty(mensajes)}"
+         th:replace="~{public/layout/paginacion :: controles}"></div>
+</main>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+</body>
+</html>

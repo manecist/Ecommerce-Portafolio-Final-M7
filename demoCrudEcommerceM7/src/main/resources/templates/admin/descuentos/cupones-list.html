@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<div class="container mt-5 mb-5">
+
+    <!-- Alertas -->
+    <div th:if="${success != null or error != null}" class="mb-4">
+        <div th:if="${success != null}" class="alert alert-magica bg-white border-0 shadow-sm text-success">
+            <i class="bi bi-check-circle-fill me-2" style="color: #00d4aa;"></i>
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error != null}" class="alert alert-magica bg-white border-0 shadow-sm text-danger">
+            <i class="bi bi-exclamation-octagon-fill me-2" style="color: #6907ab;"></i>
+            <span th:text="${error}"></span>
+        </div>
+    </div>
+
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-0" style="color: #6907ab;">🎟️ Cupones de Descuento</h3>
+            <small class="text-muted">Los clientes los ingresan en el carrito antes de pagar</small>
+        </div>
+        <a th:href="@{/admin/descuentos}" class="btn btn-turquesa-magico rounded-pill px-4">
+            <i class="bi bi-tags me-1"></i> Gestionar Descuentos
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Formulario -->
+        <div class="col-md-4 mb-4">
+            <div class="card  shadow-lg rounded-4">
+                <div class="card-header gestionheader py-3 rounded-top-4">
+                    <h5 class="mb-0 fw-bold text-center"
+                        th:text="${cuponEnEdicion.id != null} ? '✨ Editar Cupón' : '🎟️ Nuevo Cupón'"></h5>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/admin/cupones/guardar}" th:object="${cuponEnEdicion}" method="post">
+
+                        <input type="hidden" th:if="${cuponEnEdicion.id != null}" th:field="*{id}">
+                        <!-- Preservar usos actuales al editar -->
+                        <input type="hidden" th:if="${cuponEnEdicion.id != null}" th:field="*{usosActuales}">
+
+                        <!-- Código -->
+                        <div class="mb-3">
+                            <label class="form-label label-magico text-uppercase">Código del Cupón</label>
+                            <input type="text" th:field="*{codigo}" class="form-control text-uppercase"
+                                   placeholder="Ej: MAGIC20" required
+                                   style="font-family: monospace; letter-spacing: 2px; font-weight: bold;">
+                            <small class="text-muted">Se convierte automáticamente a mayúsculas</small>
+                        </div>
+
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label class="form-label label-magico text-uppercase">Nombre / Descripción</label>
+                            <input type="text" th:field="*{nombre}" class="form-control"
+                                   placeholder="Ej: Descuento de bienvenida" required>
+                        </div>
+
+                        <!-- Tipo + Valor -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label label-magico text-uppercase">Tipo</label>
+                                <select th:field="*{tipo}" class="form-select" required>
+                                    <option value="">-- Tipo --</option>
+                                    <option th:each="t : ${tiposDescuento}"
+                                            th:value="${t.name()}"
+                                            th:text="${t.label}"
+                                            th:selected="${cuponEnEdicion.tipo == t}"></option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label label-magico text-uppercase">Valor</label>
+                                <input type="number" th:field="*{valor}" class="form-control"
+                                       placeholder="Ej: 15" min="0.01" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <!-- Monto mínimo -->
+                        <div class="mb-3">
+                            <label class="form-label label-magico text-uppercase">Monto Mínimo ($)</label>
+                            <input type="number" th:field="*{montoMinimo}" class="form-control"
+                                   placeholder="0 = sin mínimo" min="0" step="1">
+                            <small class="text-muted">Monto mínimo del carrito para aplicar el cupón</small>
+                        </div>
+
+                        <!-- Fecha de expiración -->
+                        <div class="mb-3">
+                            <label class="form-label label-magico text-uppercase">Fecha de Expiración</label>
+                            <input type="date" th:field="*{fechaExpiracion}" class="form-control">
+                            <small class="text-muted">Dejar en blanco para sin vencimiento</small>
+                        </div>
+
+                        <!-- Límite de usos -->
+                        <div class="mb-3">
+                            <label class="form-label label-magico text-uppercase">Límite de Usos</label>
+                            <input type="number" th:field="*{limiteUsos}" class="form-control"
+                                   placeholder="Dejar en blanco = ilimitado" min="1">
+                            <small class="text-muted">Usos actuales:
+                                <strong th:text="${cuponEnEdicion.usosActuales ?: 0}">0</strong>
+                            </small>
+                        </div>
+
+                        <!-- Activo -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" th:field="*{activo}" id="activoCuponCheck">
+                            <label class="form-check-label fw-bold" for="activoCuponCheck">Cupón activo</label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-turquesa-magico py-2 fw-bold">
+                                <i class="bi bi-stars me-1"></i>
+                                <span th:text="${cuponEnEdicion.id != null} ? 'Actualizar Cupón' : 'Crear Cupón'"></span>
+                            </button>
+                            <a th:if="${cuponEnEdicion.id != null}"
+                               th:href="@{/admin/cupones}" class="btn btn-link text-muted text-decoration-none text-center small">
+                                Cancelar Edición
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de cupones -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 30px; overflow: hidden;">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-center">
+                        <thead class="table-light text-uppercase small fw-bold" style="background: #f8f0ff;">
+                            <tr>
+                                <th class="py-3 text-start ps-3" style="color: #6907ab;">Código</th>
+                                <th style="color: #6907ab;">Tipo</th>
+                                <th style="color: #6907ab;">Valor</th>
+                                <th style="color: #6907ab;">Mín. $</th>
+                                <th style="color: #6907ab;">Usos</th>
+                                <th style="color: #6907ab;">Vence</th>
+                                <th style="color: #6907ab;">Estado</th>
+                                <th style="color: #6907ab;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(cupones)}">
+                                <td colspan="8" class="text-muted py-4">No hay cupones creados aún</td>
+                            </tr>
+                            <tr th:each="c : ${cupones}">
+                                <td class="text-start ps-3">
+                                    <code class="fw-bold" style="font-size:1rem; color:#6907ab; letter-spacing:1px;"
+                                          th:text="${c.codigo}"></code>
+                                    <br>
+                                    <small class="text-muted" th:text="${c.nombre}"></small>
+                                </td>
+                                <td>
+                                    <span class="badge rounded-pill"
+                                          th:style="${c.tipo.name() == 'PORCENTAJE'} ? 'background:#d9aaff;color:#6907ab;' : 'background:#b2f0e8;color:#007a63;'"
+                                          th:text="${c.tipo.label}"></span>
+                                </td>
+                                <td class="fw-bold">
+                                    <span th:text="${c.tipo.name() == 'PORCENTAJE'} ? ${c.valor + '%'} : ('$' + ${#numbers.formatInteger(c.valor, 0, 'POINT')})"></span>
+                                </td>
+                                <td class="small"
+                                    th:text="${c.montoMinimo != null and c.montoMinimo > 0} ? ('$' + ${#numbers.formatInteger(c.montoMinimo, 0, 'POINT')}) : '—'"></td>
+                                <td>
+                                    <span th:text="${c.usosActuales}"></span>
+                                    <span th:if="${c.limiteUsos != null}" class="text-muted" th:text="'/' + ${c.limiteUsos}"></span>
+                                    <span th:unless="${c.limiteUsos != null}" class="text-muted">/ ∞</span>
+                                </td>
+                                <td class="small text-muted"
+                                    th:text="${c.fechaExpiracion != null} ? ${#temporals.format(c.fechaExpiracion, 'dd/MM/yy')} : '—'"></td>
+                                <td>
+                                    <span th:if="${c.estaDisponible()}" class="badge" style="background:#b2f0e8;color:#007a63;">Disponible</span>
+                                    <span th:unless="${c.estaDisponible()}" class="badge bg-secondary">Agotado/Inactivo</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group gap-1">
+                                        <a th:href="@{/admin/cupones(action='edit', id=${c.id})}"
+                                           class="btn btn-editar-magico btn-sm shadow-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <form th:action="@{'/admin/cupones/' + ${c.id} + '/toggle'}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm shadow-sm"
+                                                    th:style="${c.isActivo()} ? 'background:#fff3cd;color:#856404;border-color:#ffc107;' : 'background:#d1e7dd;color:#0a3622;border-color:#a3cfbb;'"
+                                                    th:title="${c.isActivo()} ? 'Desactivar' : 'Activar'">
+                                                <i class="bi" th:classappend="${c.isActivo()} ? 'bi-pause-circle' : 'bi-play-circle'"></i>
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn btn-eliminar-magico btn-sm shadow-sm"
+                                                th:attr="data-id=${c.id}, data-codigo=${c.codigo}"
+                                                onclick="prepararBorradoCupon(this.dataset.id, this.dataset.codigo)"
+                                                data-bs-toggle="modal" data-bs-target="#deleteCuponModal">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:replace="~{public/layout/paginacion :: controles}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal eliminar -->
+<div class="modal fade" id="deleteCuponModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-magico-danger">
+            <div class="modal-header header-eliminar-modal">
+                <h5 class="modal-title fw-bold text-white">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> ¿Eliminar Cupón?
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="mb-1 text-muted small text-uppercase fw-bold">Vas a eliminar el cupón:</p>
+                <h5 id="codigoCuponBorrar" class="fw-bold mb-3" style="color: #6907ab; font-family: monospace;"></h5>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center pb-4">
+                <button type="button" class="btn btn-revisar-modal" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formEliminarCupon" method="post" action="#">
+                    <button type="submit" class="btn btn-desvanecer-confirmar">
+                        Eliminar <i class="bi bi-wind ms-1"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+
+<script>
+    function prepararBorradoCupon(id, codigo) {
+        document.getElementById('codigoCuponBorrar').textContent = codigo;
+        document.getElementById('formEliminarCupon').action = '/admin/cupones/' + id + '/eliminar';
+    }
+</script>
+</body>
+</html>

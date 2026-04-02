@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     Fragment de paginación reutilizable para todos los módulos admin.
+     Requiere en el Model: paginaActual, totalPaginas, totalElementos,
+     tamanioPagina, pagInicio, pagFin, primerElemento, ultimoElemento
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<div th:fragment="controles" class="paginacion-magica-wrapper px-3 pb-3 pt-2">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+        <!-- ── Izquierda: info + selector de tamaño ── -->
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+
+            <small class="text-muted" th:if="${totalElementos != null and totalElementos > 0}">
+                Mostrando
+                <strong class="titulo-magico" th:text="${primerElemento}">1</strong>–<strong
+                    class="titulo-magico" th:text="${ultimoElemento}">10</strong>
+                de <strong th:text="${totalElementos}">0</strong>
+            </small>
+            <small class="text-muted" th:if="${totalElementos == null or totalElementos == 0}">
+                Sin resultados
+            </small>
+
+            <div class="d-flex align-items-center gap-2">
+                <small class="text-muted text-nowrap">Por página:</small>
+                <select class="form-select form-select-sm selector-magico pag-size-select"
+                        style="width:72px; height:28px; font-size:0.78rem; padding:2px 6px;"
+                        onchange="paginaCambiarTamano(this.value)">
+                    <option th:each="op : ${ {5, 10, 25, 50, 100} }"
+                            th:value="${op}"
+                            th:text="${op}"
+                            th:selected="${op == tamanioPagina}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ── Derecha: controles de navegación ── -->
+        <nav th:if="${totalPaginas != null and totalPaginas > 1}" aria-label="Paginación">
+            <ul class="pagination pagination-sm mb-0 flex-wrap gap-1">
+
+                <!-- Primera página -->
+                <li class="page-item" th:classappend="${paginaActual == 0} ? 'disabled'">
+                    <a class="page-link pag-link" href="#"
+                       onclick="paginaIr(0); return false;" title="Primera">«</a>
+                </li>
+
+                <!-- Anterior -->
+                <li class="page-item" th:classappend="${paginaActual == 0} ? 'disabled'">
+                    <a class="page-link pag-link" href="#"
+                       th:onclick="|paginaIr([[${paginaActual - 1}]]); return false;|"
+                       title="Anterior">‹</a>
+                </li>
+
+                <!-- Páginas en ventana -->
+                <li th:each="i : ${#numbers.sequence(pagInicio, pagFin)}"
+                    class="page-item"
+                    th:classappend="${i == paginaActual} ? 'active'">
+                    <a class="page-link pag-link" href="#"
+                       th:onclick="|paginaIr([[${i}]]); return false;|"
+                       th:text="${i + 1}">1</a>
+                </li>
+
+                <!-- Siguiente -->
+                <li class="page-item" th:classappend="${paginaActual >= totalPaginas - 1} ? 'disabled'">
+                    <a class="page-link pag-link" href="#"
+                       th:onclick="|paginaIr([[${paginaActual + 1}]]); return false;|"
+                       title="Siguiente">›</a>
+                </li>
+
+                <!-- Última página -->
+                <li class="page-item" th:classappend="${paginaActual >= totalPaginas - 1} ? 'disabled'">
+                    <a class="page-link pag-link" href="#"
+                       th:onclick="|paginaIr([[${totalPaginas - 1}]]); return false;|"
+                       title="Última">»</a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+        function paginaIr(pagina) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', pagina);
+            window.location.href = url.toString();
+        }
+        function paginaCambiarTamano(nuevoSize) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('size', nuevoSize);
+            url.searchParams.set('page', '0');
+            window.location.href = url.toString();
+        }
+    </script>
+</div>
+
+</html>

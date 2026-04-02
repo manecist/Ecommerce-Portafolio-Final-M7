@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<main class="container mt-5 mb-5">
+
+    <div class="text-center mb-4">
+        <h1 class="fw-bolder display-5">📦 Gestión de Pedidos</h1>
+        <p class="text-muted">Administra el estado de todos los pedidos del reino</p>
+    </div>
+
+    <!-- Mensajes flash -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show shadow-sm mb-4" style="border-radius: 15px;">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" style="border-radius: 15px;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Panel de filtros unificado -->
+    <div class="filtros-pedidos-card mb-4">
+        <form th:action="@{/admin/pedidos}" method="get">
+            <!-- Fila 1: fechas + email + botones -->
+            <div class="row g-2 align-items-end mb-3">
+                <div class="col-sm-auto">
+                    <label class="form-label">Desde</label>
+                    <input type="date" name="fechaDesde" class="form-control form-control-sm input-magico"
+                           th:value="${fechaDesde}" style="border-radius:12px;">
+                </div>
+                <div class="col-sm-auto">
+                    <label class="form-label">Hasta</label>
+                    <input type="date" name="fechaHasta" class="form-control form-control-sm input-magico"
+                           th:value="${fechaHasta}" style="border-radius:12px;">
+                </div>
+                <div class="col-sm">
+                    <label class="form-label">Buscar por email</label>
+                    <input type="email" name="emailBuscar" class="form-control form-control-sm input-magico"
+                           placeholder="cliente@email.com" th:value="${emailBuscar}" style="border-radius:12px;">
+                </div>
+                <!-- estado y orden ocultos para mantener filtros activos -->
+                <input type="hidden" name="filtroEstado" th:value="${filtroActual}">
+                <input type="hidden" name="orden" th:value="${orden}">
+                <div class="col-sm-auto d-flex gap-2 align-items-end">
+                    <button type="submit" class="btn btn-filtrar-magic btn-sm px-3">
+                        <i class="bi bi-search me-1"></i>Filtrar
+                    </button>
+                    <a th:href="@{/admin/pedidos}" class="btn btn-limpiar-magic btn-sm px-3">
+                        <i class="bi bi-x-circle me-1"></i>Limpiar
+                    </a>
+                </div>
+            </div>
+
+            <!-- Fila 2: filtros de estado -->
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <span class="form-label mb-0 me-1">Estado:</span>
+                <a th:href="@{/admin/pedidos(filtroEstado='TODOS', fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden=${orden})}"
+                   th:classappend="${filtroActual == 'TODOS'} ? 'active' : ''"
+                   class="filtro-estado-btn btn btn-outline-secondary">
+                    Todos
+                </a>
+                <a th:each="estado : ${estados}"
+                   th:href="@{/admin/pedidos(filtroEstado=${estado.name()}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden=${orden})}"
+                   th:classappend="${filtroActual == estado.name()} ? 'active' : ''"
+                   th:text="${estado}"
+                   class="filtro-estado-btn btn"
+                   th:style="${filtroActual == estado.name()} ?
+                        'background:linear-gradient(135deg,#6907ab,#a252ee);color:black;border-color:transparent;' :
+                        'background:rgba(105,7,171,0.07);color:#6907ab;border-color:#d9aaff;'">
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Contador de resultados -->
+    <div class="d-flex justify-content-between align-items-center mb-3 px-1">
+        <small class="text-muted fw-bold">
+            <i class="bi bi-list-check me-1"></i>
+            <span th:text="${totalElementos}">0</span> pedido(s) encontrado(s)
+        </small>
+        <small class="text-muted" th:if="${emailBuscar != null and !#strings.isEmpty(emailBuscar)}">
+            <i class="bi bi-search me-1"></i>Buscando: <strong th:text="${emailBuscar}"></strong>
+        </small>
+    </div>
+
+    <!-- Sin resultados -->
+    <div th:if="${#lists.isEmpty(pedidos)}" class="text-center py-5 carrito-vacio-box">
+        <i class="bi bi-inbox display-1 text-muted"></i>
+        <p class="fw-bold text-muted mt-3">No hay pedidos que coincidan con los filtros aplicados</p>
+        <a th:href="@{/admin/pedidos}" class="btn btn-filtrar-magic btn-sm px-4 mt-2">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Ver todos
+        </a>
+    </div>
+
+    <!-- Tabla de pedidos -->
+    <div th:unless="${#lists.isEmpty(pedidos)}" class="card border-0 shadow-sm" style="border-radius:20px; overflow:hidden;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="carrito-thead">
+                        <tr>
+                            <!-- # -->
+                            <th class="ps-4">
+                                #
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='id_asc')}"
+                                   class="text-black ms-1" title="Menor a mayor">
+                                    <i class="bi bi-sort-numeric-up" th:classappend="${orden == 'id_asc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='id_desc')}"
+                                   class="text-black" title="Mayor a menor">
+                                    <i class="bi bi-sort-numeric-down" th:classappend="${orden == 'id_desc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                            </th>
+                            <!-- Cliente -->
+                            <th>
+                                Cliente
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='cliente_asc')}"
+                                   class="text-black ms-1" title="A → Z">
+                                    <i class="bi bi-sort-alpha-up" th:classappend="${orden == 'cliente_asc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='cliente_desc')}"
+                                   class="text-black" title="Z → A">
+                                    <i class="bi bi-sort-alpha-down" th:classappend="${orden == 'cliente_desc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                            </th>
+                            <!-- Email -->
+                            <th>
+                                Email
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='email_asc')}"
+                                   class="text-black ms-1" title="A → Z">
+                                    <i class="bi bi-sort-alpha-up" th:classappend="${orden == 'email_asc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='email_desc')}"
+                                   class="text-black" title="Z → A">
+                                    <i class="bi bi-sort-alpha-down" th:classappend="${orden == 'email_desc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                            </th>
+                            <!-- Items -->
+                            <th class="text-center">
+                                Items
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='items_asc')}"
+                                   class="text-black ms-1" title="Menor a mayor">
+                                    <i class="bi bi-sort-numeric-up" th:classappend="${orden == 'items_asc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='items_desc')}"
+                                   class="text-black" title="Mayor a menor">
+                                    <i class="bi bi-sort-numeric-down" th:classappend="${orden == 'items_desc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                            </th>
+                            <!-- Total -->
+                            <th class="text-center">
+                                Total
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='monto_asc')}"
+                                   class="text-black ms-1" title="Menor a mayor">
+                                    <i class="bi bi-sort-numeric-up" th:classappend="${orden == 'monto_asc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='monto_desc')}"
+                                   class="text-black" title="Mayor a menor">
+                                    <i class="bi bi-sort-numeric-down" th:classappend="${orden == 'monto_desc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                            </th>
+                            <!-- Fecha -->
+                            <th class="text-center">
+                                Fecha
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='fecha_asc')}"
+                                   class="text-black ms-1" title="Más antigua primero">
+                                    <i class="bi bi-sort-up" th:classappend="${orden == 'fecha_asc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='fecha_desc')}"
+                                   class="text-black" title="Más reciente primero">
+                                    <i class="bi bi-sort-down" th:classappend="${orden == 'fecha_desc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                            </th>
+                            <!-- Estado -->
+                            <th class="text-center">
+                                Estado
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='estado_asc')}"
+                                   class="text-black ms-1" title="A → Z">
+                                    <i class="bi bi-sort-alpha-up" th:classappend="${orden == 'estado_asc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                                <a th:href="@{/admin/pedidos(filtroEstado=${filtroActual}, fechaDesde=${fechaDesde}, fechaHasta=${fechaHasta}, emailBuscar=${emailBuscar}, orden='estado_desc')}"
+                                   class="text-black" title="Z → A">
+                                    <i class="bi bi-sort-alpha-down" th:classappend="${orden == 'estado_desc'} ? '' : ' opacity-50'"></i>
+                                </a>
+                            </th>
+                            <th class="text-center">Cambiar Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="pedido : ${pedidos}">
+                            <td class="ps-4 fw-bold" th:text="${pedido.id}"></td>
+                            <td th:text="${pedido.nombreParaMostrar}"></td>
+                            <td>
+                                <small th:text="${pedido.emailContacto}"></small>
+                            </td>
+                            <td class="text-center" th:text="${pedido.items.size()}"></td>
+                            <td class="text-center">
+                                <span class="fw-bold precio-magico" style="margin-top:0; display:inline;"
+                                      th:text="'$ ' + ${#numbers.formatInteger(pedido.total, 0, 'POINT')}"></span>
+                            </td>
+                            <td class="text-center">
+                                <small th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yy HH:mm')}"></small>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge estado-pedido-badge"
+                                      th:classappend="${pedido.estado.name()}"
+                                      th:text="${pedido.estado}">
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <form th:action="@{/admin/pedidos/estado}" method="post" class="d-flex gap-1 justify-content-center">
+                                    <input type="hidden" name="pedidoId" th:value="${pedido.id}">
+                                    <select name="nuevoEstado" class="form-select form-select-sm selector-magico" style="max-width: 160px;">
+                                        <option th:each="e : ${estados}"
+                                                th:value="${e.name()}"
+                                                th:text="${e}"
+                                                th:selected="${e == pedido.estado}">
+                                        </option>
+                                    </select>
+                                    <button type="submit" class="btn btn-turquesa-magico btn-sm rounded-pill px-2" title="Actualizar">
+                                        <i class="bi bi-check2"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:replace="~{public/layout/paginacion :: controles}"></div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+</body>
+</html>
