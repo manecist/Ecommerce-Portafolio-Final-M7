@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<main class="container mt-5 mb-5">
+
+    <!-- Botón volver al catálogo -->
+    <div class="mb-4">
+        <a th:href="@{/productos(idCategoria=${returnCatId}, idSubcategoria=${returnSubCatId}, orden=${returnOrden}, txtBuscar=${returnBuscar})}"
+           class="btn btn-volver-detalle">
+            <i class="bi bi-arrow-left-circle me-2"></i>Volver al catálogo
+        </a>
+    </div>
+
+    <!-- Sección principal del producto -->
+    <div class="card border-0 shadow detalle-card-magic mb-5">
+        <div class="row g-0 align-items-center p-4">
+
+            <!-- Imagen -->
+            <div class="col-md-5 text-center">
+                <img th:src="${producto.imagen != null and !#strings.contains(producto.imagen, '/')} ? @{'/productos/' + ${producto.imagen}} : @{'/assets/img/' + ${producto.imagen}}"
+                     th:alt="${producto.nombre}"
+                     class="img-detalle-producto img-detalle-page">
+            </div>
+
+            <!-- Info -->
+            <div class="col-md-7 ps-md-5">
+                <!-- Categoría / Subcategoría -->
+                <div class="mb-2">
+                    <a th:href="@{/productos(idCategoria=${producto.subcategoria.categoria.id})}"
+                       class="text-decoration-none">
+                        <span class="badge badge-categoria-detalle me-1"
+                              th:text="${producto.subcategoria.categoria.nombre}"></span>
+                    </a>
+                    <a th:href="@{/productos(idCategoria=${producto.subcategoria.categoria.id}, idSubcategoria=${producto.subcategoria.id})}"
+                       class="text-decoration-none">
+                        <span class="badge badge-subcat-detalle"
+                              th:text="${producto.subcategoria.nombre}"></span>
+                    </a>
+                </div>
+
+                <h1 class="fw-bolder nombre-detalle-magic mb-2" th:text="${producto.nombre}"></h1>
+
+                <p class="text-muted descripcion-detalle-magic mb-4"
+                   th:text="${producto.descripcion != null and !#strings.isEmpty(producto.descripcion)} ? ${producto.descripcion} : 'Sin descripción disponible.'">
+                </p>
+
+                <!-- Precio y stock -->
+                <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+                    <span class="precio-detalle-magic"
+                          th:text="'$ ' + ${#numbers.formatInteger(producto.precio, 0, 'POINT')}"></span>
+
+                    <span th:if="${producto.stock > 0}"
+                          class="stock-badge-detalle"
+                          style="background:#d1f7ee; color:#0a7a5f; border:1px solid #00d4aa; border-radius:20px; padding:4px 14px;">
+                        <i class="bi bi-stars me-1"></i>Stock: <span th:text="${producto.stock}"></span>
+                    </span>
+                    <span th:unless="${producto.stock > 0}"
+                          class="stock-badge-detalle"
+                          style="background:#f8d7da; color:#842029; border-radius:20px; padding:4px 14px;">
+                        <i class="bi bi-x-circle me-1"></i>Sin Stock
+                    </span>
+                </div>
+
+                <!-- Controles de compra (con stock) -->
+                <div th:if="${producto.stock > 0}">
+                    <div class="qty-selector-magic my-3 justify-content-start">
+                        <button type="button" class="btn-qty"
+                                onclick="cambiarCantidadDetalle(-1)" title="Quitar">−</button>
+                        <input type="number" class="qty-input" id="qtyDetalleInput"
+                               value="1" min="1" th:max="${producto.stock}" readonly>
+                        <button type="button" class="btn-qty"
+                                onclick="cambiarCantidadDetalle(1)" title="Agregar">+</button>
+                    </div>
+
+                    <button id="btnAgregarDetalle"
+                            th:attr="data-id=${producto.id}, data-nombre=${producto.nombre}"
+                            onclick="agregarDesdeDetalle()"
+                            class="btn btn-magico px-5 py-2 fw-bold rounded-pill shadow-sm">
+                        <i class="bi bi-cart-plus me-2"></i>Añadir al caldero 🌙
+                    </button>
+                </div>
+
+                <!-- Sin stock -->
+                <div th:unless="${producto.stock > 0}">
+                    <button class="btn btn-secondary px-5 py-2 rounded-pill disabled" disabled>
+                        <i class="bi bi-x-circle me-2"></i>Sin Stock
+                    </button>
+                </div>
+
+                <!-- Botones admin -->
+                <div sec:authorize="hasRole('ADMIN')" class="mt-4 pt-4 border-top d-flex gap-2">
+                    <a th:href="@{/productos/admin/gestion(action='edit', id=${producto.id})}"
+                       class="btn btn-editar-magico rounded-pill px-4">
+                        <i class="bi bi-pencil-square me-1"></i>Editar producto
+                    </a>
+                    <button th:onclick="'confirmarEliminar(' + ${producto.id} + ', \'' + ${producto.nombre} + '\')'"
+                            class="btn btn-eliminar-magico rounded-pill px-4">
+                        <i class="bi bi-trash3 me-1"></i>Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección productos relacionados -->
+    <div th:if="${not #lists.isEmpty(relacionados)}">
+        <div class="text-center mb-4">
+            <h3 class="fw-bolder titulo-relacionados-magic">
+                <i class="bi bi-stars me-2"></i>También te puede interesar
+            </h3>
+            <p class="text-muted">Otros tesoros de
+                <span class="fw-bold" th:text="${producto.subcategoria.categoria.nombre}"></span>
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" th:each="r : ${relacionados}">
+                <div class="card h-100 shadow-sm border-0 card-magica">
+
+                    <a th:href="@{/productos/{id}(id=${r.id}, idCategoria=${returnCatId}, idSubcategoria=${returnSubCatId}, orden=${returnOrden}, txtBuscar=${returnBuscar})}"
+                       class="d-block" title="[[${r.nombre}]]">
+                        <img th:src="${r.imagen != null and !#strings.contains(r.imagen, '/')} ? @{'/productos/' + ${r.imagen}} : @{'/assets/img/' + ${r.imagen}}"
+                             class="card-img-top p-3 img-producto-redonda" th:alt="${r.nombre}">
+                    </a>
+
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="fw-bold" th:text="${r.nombre}"></h5>
+                        <p class="text-muted small mb-2" th:text="${r.descripcion}"></p>
+                        <span class="badge bg-light text-dark mb-3 mx-auto border"
+                              th:text="${r.subcategoria.nombre}"></span>
+
+                        <div class="mb-2 mt-auto">
+                            <h3 class="fw-bold mb-1" style="color:#6907ab; font-weight:800;"
+                                th:text="'$ ' + ${#numbers.formatInteger(r.precio, 0, 'POINT')}"></h3>
+
+                            <div th:if="${r.stock > 0}">
+                                <small class="stock-disponible fw-bold">
+                                    <i class="bi bi-stars"></i> Stock: <span th:text="${r.stock}"></span>
+                                </small>
+                            </div>
+                            <div th:unless="${r.stock > 0}">
+                                <small class="stock-agotado fw-bold">
+                                    <i class="bi bi-x-circle"></i> Agotado
+                                </small>
+                            </div>
+                        </div>
+
+                        <div th:if="${r.stock > 0}">
+                            <div class="qty-selector-magic my-2">
+                                <button type="button" class="btn-qty"
+                                        th:onclick="'cambiarCantidad(this, -1, ' + ${r.stock} + ')'"
+                                        title="Quitar">−</button>
+                                <input type="number" class="qty-input" value="1" min="1"
+                                       th:max="${r.stock}" readonly>
+                                <button type="button" class="btn-qty"
+                                        th:onclick="'cambiarCantidad(this, 1, ' + ${r.stock} + ')'"
+                                        title="Agregar">+</button>
+                            </div>
+                            <button th:attr="data-id=${r.id}, data-nombre=${r.nombre}"
+                                    onclick="agregarAlCarritoConCantidad(this)"
+                                    class="btn btn-magico w-100 py-2 fw-bold shadow-sm rounded-pill text-white mb-2">
+                                Añadir al caldero 🌙
+                            </button>
+                        </div>
+                        <div th:unless="${r.stock > 0}">
+                            <button class="btn btn-secondary w-100 py-2 rounded-pill disabled mb-2" disabled>Sin Stock</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- Modal eliminar producto (admin) -->
+<div class="modal fade modal-magic-danger" id="modalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="bi bi-trash3 me-2"></i>¿Desvanecer este Tesoro?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="text-muted mb-2">Estás a punto de eliminar permanentemente:</p>
+                <h5 id="nombreProdEliminar" class="fw-bold" style="color: #6907ab;"></h5>
+                <p class="text-muted small mt-2">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                    <i class="bi bi-shield-check me-1"></i>Conservar
+                </button>
+                <form id="formEliminarProd" method="post" action="#">
+                    <button type="submit" class="btn rounded-pill px-4 fw-bold"
+                            style="background:linear-gradient(135deg,#c0392b,#ff6b6b);color:white;border:none;">
+                        <i class="bi bi-trash3 me-1"></i>Sí, Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+Instrucciones de ejecución
+
+1. Descargar desde GitHub link -> https://github.com/manecist/Ecommerce-Portafolio-Final-M7
+2. Extraer Zip
+3. Abrir desde el IDE IntelliJ o cualquier otro IDE como Netbeans
+4. Open folder -> Confió en el archivo
+5. Antes de ejecutar se debe crear la base de datos llamada -> crud_ecommerce_m6;
+6. Escribir en application properties la base de datos
+7. Ejecutar el scrip M7 que esta dentro de la carpeta para aplicar mi lógica de tablas dentro de la base de datos
+8. Voy a C:\demoCrudEcommerceM7\src\main\java\com\magicalAliance\DemoCrudEcommerceM6Application.java
+9. Aplico Run desde app  o bien desde la carpeta de demoCrudEcommerceM7 en la opción terminal uso comando mvn spring-boot:run
+10. Escribo en Url -> http://localhost:8080/ o http://localhost:8080/home
+11. Se vera la app gracias al tomcat interno y se puede navegar en ella mientras la terminal este ejecutada.
+ 
+Rutas
+
+Rutas Públicas
+
+/ /home
+/login
+/registro
+/recuperar-contrasena
+/nueva-contrasena
+/acceso-denegado
+/productos
+/productos/{id}
+/contacto
+/subscribir
+/subscribir/baja
+/carrito
+/carrito/agregar
+/carrito/actualizar
+/carrito/eliminar/{itemId}
+/carrito/aplicar-cupon
+/carrito/quitar-cupon
+/carrito/vaciar
+/logout
+
+Rutas de Cliente (ROLE_CLIENT)
+
+/carrito/checkout
+/carrito/confirmacion/{pedidoId}
+/mis-pedidos
+/mis-pedidos/{id}
+/mis-pedidos/{id}/cancelar
+/mis-pedidos/{id}/devolucion
+/usuarios/perfil
+/usuarios/perfil/{id}
+/usuarios/editar-acceso/{id}
+/usuarios/editar-datos/{id}
+/usuarios/direcciones/agregar/{usuarioId}
+/usuarios/direcciones/editar/{usuarioId}/{dirId}
+/usuarios/direcciones/principal/{usuarioId}/{dirId}
+/usuarios/direcciones/eliminar/{usuarioId}/{dirId}
+/usuarios/suscripcion/toggle/{id}
+/usuarios/eliminar-cuenta/{id}
+
+Rutas de Administrador (ROLE_ADMIN)
+
+/usuarios/admin/gestion
+/usuarios/admin/nuevo
+/usuarios/admin/editar/{id}
+/usuarios/admin/guardar
+/usuarios/admin/cambiar-rol
+/usuarios/admin/verificar-rut/{rut}
+/usuarios/eliminar/{id}
+/usuarios/direcciones/agregarAdmin/{usuarioId}
+/usuarios/direcciones/editarAdmin/{usuarioId}/{dirId}
+/usuarios/direcciones/principalAdmin/{usuarioId}/{dirId}
+/usuarios/direcciones/eliminarAdmin/{usuarioId}/{dirId}
+/usuarios/invitado/actualizar-datos
+/productos/admin/gestion
+/productos/admin/guardar
+/productos/admin/eliminar/{id}
+/admin/categorias
+/admin/categorias/gestion
+/admin/categorias/guardar
+/admin/categorias/eliminar/{id}
+/admin/subcategorias
+/admin/subcategorias/gestion
+/admin/subcategorias/guardar
+/admin/subcategorias/eliminar/{id}
+/admin/pedidos
+/admin/pedidos/estado
+/admin/descuentos
+/admin/descuentos/guardar
+/admin/descuentos/{id}/eliminar
+/admin/descuentos/{id}/toggle
+/admin/cupones
+/admin/cupones/guardar
+/admin/cupones/{id}/eliminar
+/admin/cupones/{id}/toggle
+/admin/contacto
+/admin/contacto/{id}/eliminar
+/admin/subscribir
+/admin/subscribir/{id}/dar-baja
+
+
+Paso a paso
+
+1. CREATE DATABASE crud_ecommerce_m6;
+2. USAR LA BASE DE DATOS EN APLICATION PROPERTIES
+3. USAR EL SCRIPT DE BASE DATOS M7
+4. USAR PARA ROL ADMIN EL EMAIL admin@magical.cl
+5. PASSWORD Admin.2026! -> creado desde java para ver la codificación correcta
+6. PARA ROL CLIENT EL EMAIL usuario@magical.cl
+7. PASSWORD Usuario.2026! -> creado desde registro de la app de ecommerce
+8. REVISAR LA LOGICA DEL CRUD DE USUARIOS Y PRODUCTOS LIBREMENTE
+9. USAR CARRITO DE COMPRAS
+10. VER SUS PEDIDOS
+11. SI DESEAN VER LAS NOTIFICACIONES DE LA PAGINA, USEN SUS CORREOS PROPIOS PARA CREARSE UN USUARIO
+
+

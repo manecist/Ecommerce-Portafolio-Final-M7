@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{public/layout/header :: head}"></head>
+<body>
+<div th:replace="~{public/layout/header :: header}"></div>
+
+<div class="container mt-5 mb-5">
+
+    <!-- Alertas -->
+    <div th:if="${success != null or error != null}" class="mb-4">
+        <div th:if="${success != null}" class="alert alert-magica bg-white border-0 shadow-sm text-success">
+            <i class="bi bi-check-circle-fill me-2" style="color: #00d4aa;"></i>
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error != null}" class="alert alert-magica bg-white border-0 shadow-sm text-danger">
+            <i class="bi bi-exclamation-octagon-fill me-2" style="color: #6907ab;"></i>
+            <span th:text="${error}"></span>
+        </div>
+    </div>
+
+    <!-- Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-0" style="color: #6907ab;">✨ Descuentos Automáticos</h3>
+            <small class="text-muted">Se aplican en el carrito al agregar productos</small>
+        </div>
+        <a th:href="@{/admin/cupones}" class="btn btn-turquesa-magico rounded-pill px-4">
+            <i class="bi bi-ticket-perforated me-1"></i> Gestionar Cupones
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Formulario -->
+        <div class="col-md-4 mb-4">
+            <div class="card  shadow-lg rounded-4">
+                <div class="card-header gestionheader py-3 rounded-top-4">
+                    <h5 class="mb-0 fw-bold text-center"
+                        th:text="${descuentoEnEdicion.id != null} ? '✨ Editar Descuento' : '💎 Nuevo Descuento'"></h5>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/admin/descuentos/guardar}" th:object="${descuentoEnEdicion}" method="post">
+
+                        <input type="hidden" th:if="${descuentoEnEdicion.id != null}" th:field="*{id}">
+
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label class="form-label label-magico text-uppercase">Nombre del Descuento</label>
+                            <input type="text" th:field="*{nombre}" class="form-control"
+                                   placeholder="Ej: Oferta Verano 20%" required>
+                        </div>
+
+                        <!-- Tipo + Valor -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label label-magico text-uppercase">Tipo</label>
+                                <select th:field="*{tipo}" class="form-select" required>
+                                    <option value="">-- Tipo --</option>
+                                    <option th:each="t : ${tiposDescuento}"
+                                            th:value="${t.name()}"
+                                            th:text="${t.label}"
+                                            th:selected="${descuentoEnEdicion.tipo == t}"></option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label label-magico text-uppercase">Valor</label>
+                                <input type="number" th:field="*{valor}" class="form-control"
+                                       placeholder="Ej: 20" min="0.01" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <!-- Alcance -->
+                        <div class="mb-3">
+                            <label class="form-label label-magico text-uppercase">Alcance</label>
+                            <select id="alcanceSelect" th:field="*{alcance}" class="form-select"
+                                    onchange="toggleAlcanceSelector(this.value)" required>
+                                <option value="">-- Alcance --</option>
+                                <option th:each="a : ${alcances}"
+                                        th:value="${a.name()}"
+                                        th:text="${a.label}"
+                                        th:selected="${descuentoEnEdicion.alcance == a}"></option>
+                            </select>
+                        </div>
+
+                        <!-- Selector de Categoría -->
+                        <div id="selectorCategoria" class="mb-3" style="display:none;">
+                            <label class="form-label label-magico text-uppercase">Categoría</label>
+                            <select name="categoriaId" class="form-select">
+                                <option value="">-- Seleccionar --</option>
+                                <option th:each="c : ${categorias}"
+                                        th:value="${c.id}"
+                                        th:text="${c.nombre}"
+                                        th:selected="${descuentoEnEdicion.categoria != null and descuentoEnEdicion.categoria.id == c.id}"></option>
+                            </select>
+                        </div>
+
+                        <!-- Selector de Subcategoría -->
+                        <div id="selectorSubcategoria" class="mb-3" style="display:none;">
+                            <label class="form-label label-magico text-uppercase">Subcategoría</label>
+                            <select name="subcategoriaId" class="form-select">
+                                <option value="">-- Seleccionar --</option>
+                                <option th:each="s : ${subcategorias}"
+                                        th:value="${s.id}"
+                                        th:text="${s.categoria.nombre + ' › ' + s.nombre}"
+                                        th:selected="${descuentoEnEdicion.subcategoria != null and descuentoEnEdicion.subcategoria.id == s.id}"></option>
+                            </select>
+                        </div>
+
+                        <!-- Selector de Producto -->
+                        <div id="selectorProducto" class="mb-3" style="display:none;">
+                            <label class="form-label label-magico text-uppercase">Producto</label>
+                            <select name="productoId" class="form-select">
+                                <option value="">-- Seleccionar --</option>
+                                <option th:each="p : ${productos}"
+                                        th:value="${p.id}"
+                                        th:text="${p.nombre}"
+                                        th:selected="${descuentoEnEdicion.producto != null and descuentoEnEdicion.producto.id == p.id}"></option>
+                            </select>
+                        </div>
+
+                        <!-- Fechas -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label label-magico text-uppercase">Inicio</label>
+                                <input type="date" th:field="*{fechaInicio}" class="form-control" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label label-magico text-uppercase">Fin</label>
+                                <input type="date" th:field="*{fechaFin}" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <!-- Activo -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" th:field="*{activo}" id="activoCheck">
+                            <label class="form-check-label fw-bold" for="activoCheck">Descuento activo</label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-turquesa-magico py-2 fw-bold">
+                                <i class="bi bi-stars me-1"></i>
+                                <span th:text="${descuentoEnEdicion.id != null} ? 'Actualizar Descuento' : 'Crear Descuento'"></span>
+                            </button>
+                            <a th:if="${descuentoEnEdicion.id != null}"
+                               th:href="@{/admin/descuentos}" class="btn btn-link text-muted text-decoration-none text-center small">
+                                Cancelar Edición
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de descuentos -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 30px; overflow: hidden;">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-center">
+                        <thead class="table-light text-uppercase small fw-bold" style="background: #f8f0ff;">
+                            <tr>
+                                <th class="py-3" style="color: #6907ab;">Nombre</th>
+                                <th style="color: #6907ab;">Tipo</th>
+                                <th style="color: #6907ab;">Valor</th>
+                                <th style="color: #6907ab;">Alcance</th>
+                                <th style="color: #6907ab;">Objetivo</th>
+                                <th style="color: #6907ab;">Vigencia</th>
+                                <th style="color: #6907ab;">Estado</th>
+                                <th style="color: #6907ab;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(descuentos)}">
+                                <td colspan="8" class="text-muted py-4">No hay descuentos creados aún</td>
+                            </tr>
+                            <tr th:each="d : ${descuentos}">
+                                <td class="fw-bold text-start ps-3" th:text="${d.nombre}"></td>
+                                <td>
+                                    <span class="badge rounded-pill"
+                                          th:style="${d.tipo.name() == 'PORCENTAJE'} ? 'background:#d9aaff;color:#6907ab;' : 'background:#b2f0e8;color:#007a63;'"
+                                          th:text="${d.tipo.label}"></span>
+                                </td>
+                                <td class="fw-bold">
+                                    <span th:text="${d.tipo.name() == 'PORCENTAJE'} ? ${d.valor + '%'} : ('$' + ${#numbers.formatInteger(d.valor, 0, 'POINT')})"></span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark" th:text="${d.alcance.label}"></span>
+                                </td>
+                                <td class="small" th:text="${d.objetivoDescripcion}"></td>
+                                <td class="small text-muted">
+                                    <span th:text="${#temporals.format(d.fechaInicio, 'dd/MM/yy')}"></span>
+                                    →
+                                    <span th:text="${#temporals.format(d.fechaFin, 'dd/MM/yy')}"></span>
+                                </td>
+                                <td>
+                                    <span th:if="${d.estaVigente()}" class="badge" style="background:#b2f0e8;color:#007a63;">Vigente</span>
+                                    <span th:unless="${d.estaVigente()}" class="badge bg-secondary">Inactivo</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group gap-1">
+                                        <a th:href="@{/admin/descuentos(action='edit', id=${d.id})}"
+                                           class="btn btn-editar-magico btn-sm shadow-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <form th:action="@{'/admin/descuentos/' + ${d.id} + '/toggle'}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm shadow-sm"
+                                                    th:style="${d.isActivo()} ? 'background:#fff3cd;color:#856404;border-color:#ffc107;' : 'background:#d1e7dd;color:#0a3622;border-color:#a3cfbb;'"
+                                                    th:title="${d.isActivo()} ? 'Desactivar' : 'Activar'">
+                                                <i class="bi" th:classappend="${d.isActivo()} ? 'bi-pause-circle' : 'bi-play-circle'"></i>
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn btn-eliminar-magico btn-sm shadow-sm"
+                                                th:attr="data-id=${d.id}, data-nombre=${d.nombre}"
+                                                onclick="prepararBorradoDescuento(this.dataset.id, this.dataset.nombre)"
+                                                data-bs-toggle="modal" data-bs-target="#deleteDescuentoModal">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div th:replace="~{public/layout/paginacion :: controles}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal eliminar -->
+<div class="modal fade" id="deleteDescuentoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-magico-danger">
+            <div class="modal-header header-eliminar-modal">
+                <h5 class="modal-title fw-bold text-white">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> ¿Eliminar Descuento?
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="mb-1 text-muted small text-uppercase fw-bold">Vas a eliminar el descuento:</p>
+                <h5 id="nombreDescuentoBorrar" class="fw-bold mb-3" style="color: #6907ab;"></h5>
+            </div>
+            <div class="modal-footer border-0 d-flex justify-content-center pb-4">
+                <button type="button" class="btn btn-revisar-modal" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formEliminarDescuento" method="post" action="#">
+                    <button type="submit" class="btn btn-desvanecer-confirmar">
+                        Eliminar <i class="bi bi-wind ms-1"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{public/layout/footer :: footer}"></div>
+
+<script th:inline="javascript">
+    // Inicializar selector según alcance actual
+    const alcanceInicial = /*[[${descuentoEnEdicion.alcance != null ? descuentoEnEdicion.alcance.name() : ''}]]*/ '';
+    if (alcanceInicial) toggleAlcanceSelector(alcanceInicial);
+
+    function toggleAlcanceSelector(alcance) {
+        document.getElementById('selectorCategoria').style.display   = alcance === 'CATEGORIA'    ? 'block' : 'none';
+        document.getElementById('selectorSubcategoria').style.display = alcance === 'SUBCATEGORIA' ? 'block' : 'none';
+        document.getElementById('selectorProducto').style.display     = alcance === 'PRODUCTO'     ? 'block' : 'none';
+    }
+
+    function prepararBorradoDescuento(id, nombre) {
+        document.getElementById('nombreDescuentoBorrar').textContent = nombre;
+        document.getElementById('formEliminarDescuento').action = '/admin/descuentos/' + id + '/eliminar';
+    }
+</script>
+</body>
+</html>
