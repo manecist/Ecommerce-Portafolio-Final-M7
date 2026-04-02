@@ -48,7 +48,7 @@
                  data-bs-interval="4000">
                 <a th:href="@{/productos(action='list', idCategoria=${cat.id})}">
                     <img th:src="${cat.imagenBanner != null ? '/assets/img/' + cat.imagenBanner : '/assets/img/logottttt.png'}"
-                         class="d-block w-100 mx" style="height:720px; with:820px;" th:alt="${cat.nombre}">
+                         class="d-block w-100 mx" style="height:720px; width:820px;" th:alt="${cat.nombre}">
                     <div class="carousel-caption d-none d-md-block">
                         <h3 class="fw-bold text-uppercase" th:text="${cat.nombre}"></h3>
                         <p>Haz clic para explorar esta colección mágica</p>
@@ -72,10 +72,10 @@
         </div>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col" th:each="prod, iter : ${listaProductos}" th:if="${iter.index < 3}">
-                <div class="card h-100 shadow-sm border-magico card-magica">
+                <div class="card h-100 shadow-sm border-magico card-magica" style="height:400px">
                     <img th:src="${prod.imagen != null ? '/assets/img/' + prod.imagen : '/assets/img/logottttt.png'}"
                          class="card-img-top" th:alt="${prod.nombre}"
-                         style="height: 200px; object-fit: cover; border-bottom: 2px solid #f8f0ff;">
+                         style="height: 200px; width:200px; object-fit: cover; border-bottom: 2px solid #f8f0ff;">
                     <div class="card-body text-center">
                         <h5 class="card-title fw-bold" th:text="${prod.nombre}"></h5>
                         <p class="card-text fw-bold" style="color: #f480ff;">

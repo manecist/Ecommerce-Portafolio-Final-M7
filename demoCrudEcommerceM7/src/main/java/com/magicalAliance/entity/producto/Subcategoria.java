@@ -32,6 +32,6 @@ public class Subcategoria {
 
     // Una subcategoría tiene muchos productos
     @Builder.Default
-    @OneToMany(mappedBy = "subcategoria", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "subcategoria")
     private List<Producto> productos = new ArrayList<>();
 }
