@@ -30,6 +30,6 @@ public class Categoria {
 
     // Una categoría tiene muchas subcategorías
     @Builder.Default
-    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "categoria")
     private List<Subcategoria> subcategorias = new ArrayList<>();
 }
