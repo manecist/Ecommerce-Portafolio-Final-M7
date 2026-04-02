@@ -1,9 +1,3 @@
-<p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com/?lines=Ecommerce+Full+Stack+Project;Spring+Boot+%7C+Security+%7C+Java;Tecnología+%2B+Creatividad+%2B+Estrategia;De+la+salud+al+mundo+TI&center=true&width=700&height=60&color=ff4da6">
-</p>
-
----
-
 <h1 align="center">🛍️ Ecommerce Full Stack - Proyecto Final</h1>
 
 <p align="center">
