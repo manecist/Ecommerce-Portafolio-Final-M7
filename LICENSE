@@ -1,0 +1,41 @@
+Copyright (c) 2026 María Inés Cisterna Escobar
+Todos los derechos reservados.
+
+Este repositorio, incluido su código fuente, documentación, diseño y la
+vitrina interactiva publicada en
+https://manecist.github.io/Ecommerce-Portafolio-Final-M7/ (en adelante, "el
+Proyecto"), es una obra personal de María Inés Cisterna Escobar, desarrollada
+como proyecto académico Full Stack Java.
+
+1. Uso permitido
+   Se permite visualizar el código fuente y navegar la demostración publicada
+   únicamente con fines de consulta y evaluación (por ejemplo, revisión
+   académica o procesos de selección laboral).
+
+2. Usos no permitidos
+   Salvo autorización previa y por escrito de la autora, no se concede permiso
+   para:
+   a) copiar, reproducir o descargar el Proyecto, total o parcialmente, para
+      reutilizarlo;
+   b) modificar, adaptar o crear obras derivadas a partir del Proyecto;
+   c) redistribuir, publicar, sublicenciar o comercializar el Proyecto o
+      partes de él;
+   d) utilizar el Proyecto, total o parcialmente, para entrenar, ajustar o
+      evaluar sistemas de inteligencia artificial o aprendizaje automático,
+      ni incorporarlo en conjuntos de datos con ese fin.
+
+3. Contenido de terceros
+   Las fotografías e imágenes de productos se incluyen solo con fines
+   demostrativos y pertenecen a sus respectivos autores y titulares. Las
+   bibliotecas y herramientas de terceros utilizadas (Spring Boot, Spring
+   Security, Hibernate, Thymeleaf, Bootstrap, Bootstrap Icons, MySQL
+   Connector, Lombok, entre otras) conservan sus propias licencias y
+   condiciones de uso, que prevalecen sobre este documento en lo que a ellas
+   respecta.
+
+4. Sin garantía
+   El Proyecto se ofrece "tal cual", sin garantías de ningún tipo. La autora
+   no será responsable de daños derivados de su uso.
+
+Para solicitar autorización escrita, contacta a la autora a través de su
+portafolio: https://manecist.github.io/

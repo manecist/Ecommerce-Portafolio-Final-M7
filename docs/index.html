@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noai, noimageai">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#000000">
+    <meta name="author" content="María Inés Cisterna Escobar">
+    <meta name="description" content="Vitrina interactiva de Magical Alliance: re-creación front-end del eCommerce Full Stack Java (Spring Boot, Spring Security, MySQL, Thymeleaf) de María Inés Cisterna Escobar. Catálogo, caldero, checkout, pedidos y panel de administración funcionando en el navegador.">
+    <title>Magical Alliance · Vitrina interactiva</title>
+    <link rel="icon" href="img/emblema.webp" type="image/webp">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="vitrina.css" rel="stylesheet">
+</head>
+<body>
+<a class="skip-link" href="#app">Saltar al contenido</a>
+
+<!-- ============ BARRA DE DEMO ============ -->
+<div class="demo-bar" role="region" aria-label="Controles de la vitrina">
+    <div class="container-xl demo-bar-inner">
+        <p class="demo-bar-text mb-0">
+            <i class="bi bi-stars" aria-hidden="true"></i>
+            <strong>Vitrina interactiva</strong>
+            <span class="demo-bar-sub">· réplica del eCommerce Spring Boot que funciona 100 % en tu navegador</span>
+        </p>
+        <div class="demo-bar-actions">
+            <div class="role-switch" role="group" aria-label="Ver la tienda como">
+                <span class="role-switch-label">Ver como:</span>
+                <button type="button" class="role-btn" data-action="rol" data-rol="INVITADO" aria-pressed="true"><i class="bi bi-person" aria-hidden="true"></i> Invitado</button>
+                <button type="button" class="role-btn" data-action="rol" data-rol="CLIENT" aria-pressed="false"><i class="bi bi-person-heart" aria-hidden="true"></i> Cliente</button>
+                <button type="button" class="role-btn" data-action="rol" data-rol="ADMIN" aria-pressed="false"><i class="bi bi-shield-check" aria-hidden="true"></i> Administradora</button>
+            </div>
+            <button type="button" class="demo-link" data-action="como-hecho"><i class="bi bi-code-slash" aria-hidden="true"></i> Cómo está hecho</button>
+            <button type="button" class="demo-link" data-action="reiniciar"><i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Reiniciar demo</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ HEADER (réplica de public/layout/header.html) ============ -->
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-mistica" aria-label="Navegación principal">
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand d-flex align-items-center" href="#/inicio" id="titulo">
+                <img src="img/emblema.webp" width="46" height="46" class="me-2 logo-header" alt="">
+                <span class="fw-bolder">Magical Alliance</span>
+            </a>
+            <div class="nav-quick d-lg-none">
+                <a class="btn-carrito-magic position-relative" href="#/caldero" aria-label="Ir al caldero">
+                    <img src="img/carrito.webp" width="38" height="38" alt="">
+                    <span class="numerito" data-numerito aria-hidden="true">0</span>
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link nav-link-magico" href="#/inicio" data-nav="inicio">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle nav-link-magico" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-nav="catalogo">Productos</a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-magic" id="menuCategorias"></ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link nav-link-magico" href="#/mis-pedidos" data-nav="mis-pedidos">Mis pedidos</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-magico" href="#/inicio/tips" data-nav="tips">Tips</a></li>
+                </ul>
+                <div class="navbar-nav ms-auto align-items-lg-center gap-3 nav-user" id="navUser"></div>
+                <a class="btn-carrito-magic position-relative d-none d-lg-inline-block ms-3" href="#/caldero" aria-label="Ir al caldero">
+                    <img src="img/carrito.webp" width="42" height="42" alt="">
+                    <span class="numerito" data-numerito aria-hidden="true">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="admin-bar-dark" id="adminBar" hidden>
+        <nav class="container admin-nav" aria-label="Gestión mágica">
+            <span class="admin-badge-text"><i class="bi bi-shield-check me-1" aria-hidden="true"></i> GESTIÓN MÁGICA</span>
+            <a href="#/admin/resumen"><i class="bi bi-speedometer2" aria-hidden="true"></i> Resumen</a>
+            <a href="#/admin/productos"><i class="bi bi-bag-heart" aria-hidden="true"></i> Productos</a>
+            <a href="#/admin/pedidos"><i class="bi bi-bag-check" aria-hidden="true"></i> Pedidos</a>
+            <a href="#/admin/descuentos"><i class="bi bi-percent" aria-hidden="true"></i> Descuentos</a>
+            <a href="#/admin/cupones"><i class="bi bi-ticket-perforated" aria-hidden="true"></i> Cupones</a>
+        </nav>
+    </div>
+</header>
+
+<main id="app" tabindex="-1" aria-live="polite"></main>
+
+<!-- ============ FOOTER (réplica de public/layout/footer.html) ============ -->
+<footer class="footer-magico">
+    <div class="container-xl footer-grid">
+        <div class="footer-social">
+            <p class="fw-bolder text-rosa-magic mb-2">Síguenos en nuestras páginas</p>
+            <span class="link-social-footer"><img src="img/face.webp" alt="" width="34" height="34"> Magical_Alliance</span>
+            <span class="link-social-footer"><img src="img/insta.webp" alt="" width="34" height="34"> MagicAlliance</span>
+            <span class="link-social-footer"><img src="img/pinterest.webp" alt="" width="34" height="34"> MagicAlliance</span>
+            <span class="link-social-footer"><img src="img/wsp.webp" alt="" width="34" height="34"> Magical Alliance</span>
+        </div>
+        <div class="footer-logo">
+            <img src="img/logo-acuarela.webp" alt="Logo de Magical Alliance" class="logo-footer-glow" width="220" height="220" loading="lazy">
+        </div>
+        <div class="footer-subs">
+            <form id="formSuscripcion" novalidate>
+                <label for="emailSuscripcion" class="form-label fw-bolder text-white">Entérate de nuestras promociones</label>
+                <div class="input-group">
+                    <input type="email" class="form-control" id="emailSuscripcion" placeholder="tu@email.com" autocomplete="email" required>
+                    <button type="submit" class="btn btn-unirse-magic">Unirse</button>
+                </div>
+                <div class="small text-warning mt-1" id="feedbackSuscripcion" role="status"></div>
+            </form>
+            <p class="footer-links mt-3 mb-0">
+                <a href="https://github.com/manecist/Ecommerce-Portafolio-Final-M7" target="_blank" rel="noopener"><i class="bi bi-github" aria-hidden="true"></i> Código en GitHub</a>
+                <a href="https://manecist.github.io/" target="_blank" rel="noopener"><i class="bi bi-person-badge" aria-hidden="true"></i> Portafolio de Ari</a>
+            </p>
+        </div>
+    </div>
+    <div class="footer-legal">
+        <p class="mb-0">© 2026 María Inés Cisterna Escobar. Todos los derechos reservados. Proyecto académico Full Stack Java; fotografías de productos con fines demostrativos, pertenecen a sus respectivos autores.</p>
+    </div>
+</footer>
+
+<button type="button" id="btnSubir" class="btn-subir-fijo" aria-label="Volver arriba">
+    <img src="img/baculo.webp" alt="" width="60" height="90">
+</button>
+
+<!-- ============ MODALES ============ -->
+<div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="detalleTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-content modal-magico">
+            <div class="modal-header border-0 pb-0">
+                <h2 class="visually-hidden" id="detalleTitulo">Detalle del producto</h2>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body pt-0" id="detalleBody"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAuth" tabindex="-1" aria-labelledby="authTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content modal-magico">
+            <div class="modal-header">
+                <h2 class="modal-title h5 titulo-login-magico" id="authTitulo"><img src="img/inicio-sesion.webp" alt="" width="34" height="34" class="me-2">Portal de la Alianza</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="authBody"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalComo" tabindex="-1" aria-labelledby="comoTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-content modal-magico">
+            <div class="modal-header">
+                <h2 class="modal-title h5 titulo-login-magico" id="comoTitulo"><i class="bi bi-code-slash me-2" aria-hidden="true"></i>Cómo está hecho</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="comoBody"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalProducto" tabindex="-1" aria-labelledby="productoFormTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content modal-magico">
+            <div class="modal-header header-rosa">
+                <h2 class="modal-title h5" id="productoFormTitulo">Registrar Nuevo Tesoro Mágico</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="productoFormBody"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalPedido" tabindex="-1" aria-labelledby="pedidoTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content modal-magico">
+            <div class="modal-header">
+                <h2 class="modal-title h5 titulo-login-magico" id="pedidoTitulo">Detalle del pedido</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="pedidoBody"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalConfirmar" tabindex="-1" aria-labelledby="confirmarTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-magico">
+            <div class="modal-header modal-eliminar-magico">
+                <h2 class="modal-title h5 text-white" id="confirmarTitulo">¿Confirmar?</h2>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="confirmarBody"></div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-magico" data-bs-dismiss="modal">Volver</button>
+                <button type="button" class="btn btn-magico" id="confirmarOk">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="vitrina.js"></script>
+</body>
+</html>
