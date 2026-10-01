@@ -4,6 +4,13 @@
 💖 Desarrollo • Tecnología • Creatividad • Estrategia 💖
 </p>
 
+<p align="center">
+✨ <a href="https://manecist.github.io/Ecommerce-Portafolio-Final-M7/"><strong>Ver la vitrina interactiva</strong></a> ✨<br>
+<sub>Re-creación front-end que ejecuta en el navegador los flujos de la tienda (catálogo, caldero, checkout, pedidos y panel de administración) con datos de demostración.</sub>
+</p>
+
+> 📜 **Licencia:** © 2026 María Inés Cisterna Escobar. Todos los derechos reservados. Se permite ver el código y la demo publicada con fines de evaluación; no se autoriza copiar, modificar, redistribuir ni usar este contenido para entrenar sistemas de IA sin autorización escrita. Ver [LICENSE](LICENSE).
+
 ---
 
 ## 🌐 Ecosistema del Proyecto
