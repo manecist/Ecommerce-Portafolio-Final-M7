@@ -5,8 +5,12 @@
 </p>
 
 <p align="center">
-✨ <a href="https://manecist.github.io/Ecommerce-Portafolio-Final-M7/"><strong>Ver la vitrina interactiva</strong></a> ✨<br>
-<sub>Re-creación front-end que ejecuta en el navegador los flujos de la tienda (catálogo, caldero, checkout, pedidos y panel de administración) con datos de demostración.</sub>
+  <a href="https://manecist.github.io/Ecommerce-Portafolio-Final-M7/"><img src="https://img.shields.io/badge/VER%20EN%20L%C3%8DNEA-Magical%20Alliance-D4AF37?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=1D3557" alt="Ver la tienda en línea"></a>
+  <a href="https://github.com/manecist/Ecommerce-Portafolio-Final-M7"><img src="https://img.shields.io/badge/VER%20REPOSITORIO-Ecommerce%20Full%20Stack-FF8FD8?style=for-the-badge&logo=github&logoColor=white&labelColor=1D3557" alt="Ver el repositorio"></a>
+</p>
+
+<p align="center">
+<sub>✨ La tienda en línea es una re-creación front-end que ejecuta en el navegador los flujos de la tienda (catálogo, caldero, checkout, pedidos y panel de administración) con datos de demostración. El código Spring Boot completo está en este repositorio. ✨</sub>
 </p>
 
 > 📜 **Licencia:** © 2026 María Inés Cisterna Escobar. Todos los derechos reservados. Se permite ver el código y la demo publicada con fines de evaluación; no se autoriza copiar, modificar, redistribuir ni usar este contenido para entrenar sistemas de IA sin autorización escrita. Ver [LICENSE](LICENSE).
@@ -24,7 +28,7 @@
 * ⚙️ Backend: https://github.com/manecist/Ecommerce-Backend-M4
 * 🔄 CRUD: https://github.com/manecist/Ecommerce-CRUD-M5
 * 🔐 Seguridad: https://github.com/manecist/Ecommerce-CRUD-SECURITY-M6
-* 🏁 Proyecto Final https://github.com/manecist/Ecommerce-Portafolio-Final-M7
+* 🏁 Proyecto Final: https://github.com/manecist/Ecommerce-Portafolio-Final-M7 · ✨ en línea: https://manecist.github.io/Ecommerce-Portafolio-Final-M7/
 
 
 ---
